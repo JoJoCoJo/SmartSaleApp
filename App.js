@@ -6,29 +6,36 @@
  * @flow
  */
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, ActivityIndicator} from 'react-native';
+import React, { Component } from 'react';
+import {
+  Text,
+  Button,
+  TextInput,
+  View,
+  ScrollView,
+  StyleSheet,
+  ActivityIndicator,
+  Image,
+  Alert,
+} from 'react-native';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+import SplashLogo from './assets/splash.png';
 
 type Props = {};
 export default class App extends Component<Props> {
   constructor (props) {
     super(props)
     this.state = {
-      loading: true,
-      view: 'suuuuuuuup? from state',
+      view: 'default',
+      login_user: '',
+      login_pass: '',
       categories: {}
     }
+    this.onPressLogin = this.onPressLogin.bind(this)
   }
 
   componentDidMount(){
-    fetch('http://smart-sale.000webhostapp.com/api/v1/categories/read/')
+    /*fetch('http://smart-sale.000webhostapp.com/api/v1/categories/read/')
     .then(
       (res) => {
         return res.json()
@@ -36,28 +43,76 @@ export default class App extends Component<Props> {
     )
     .then(
       (json) => {
-        this.setState({categories: json})
+        this.setState({categories: json.data})
+        this.setState({view: 1})
+      }
+    )*/
+    setTimeout(() => this.setState({view: 1}), 3500)
+  }
+
+  onPressLogin(){
+    let { login_user, login_pass } = this.state
+    fetch(`http://smart-sale.000webhostapp.com/api/v1/users/login/?username=${login_user}&password=${login_pass}`)
+    .then(
+      (res) => { return res.json() }
+    )
+    .then(
+      (json) => {
+        console.log('json login --->', json)
+        if (json.code === 200) {
+          alert('Logeado')
+          this.setState({view: 2})       
+        }else{
+          alert('Usuario y/o contraseña incorrectos.')
+        }
       }
     )
   }
 
-  render() {
-    return (
-      this.state.categories.data === undefined ?
-      <View style={styles.loading}>
-        {console.log('sssuuuuuup?')}
-        <ActivityIndicator size='large' />
-      </View>
-      :
-      <View style={styles.container}>
-      { this.state.categories.data.map(
-          (category, c) => {
-            return (<Text style={styles.instructions} key={c}>Categoria {c+1}: {category.name}</Text>)
-          }
+  renderView(){
+    let render = []
+    switch (this.state.view) {
+      case 1:
+        return(
+          <ScrollView style={{padding: 20}}>
+            <Text style={{fontSize: 27}}>
+              Login
+            </Text>
+            <TextInput placeholder='Username' onChangeText={(text) => this.setState({login_user: text})} value={this.state.login_user} />
+            <TextInput placeholder='Password' onChangeText={(text) => this.setState({login_pass: text})} value={this.state.login_pass} />
+            <View style={{margin:7}} />
+            <Button onPress={() => this.onPressLogin()} title="Submit" />
+          </ScrollView>
         )
-      }
+      break;
+      case 2:
+        return(
+          <ScrollView style={{padding: 20}}>
+            <Text style={{fontSize: 27}}>
+              Todo correcto.
+            </Text>
+          </ScrollView>
+        )
+      break;
+      default:
+        return(
+          <View style={styles.loading}>
+            <Image
+              source={SplashLogo}
+            />
+          </View>
+        )
+      break;
+    }
+  }
+
+  render() {
+    return(
+      <View style={styles.container}>
+        {/*<Text>{JSON.stringify(this.state)}</Text>*/}
+        {this.renderView()}
       </View>
-    );
+    )
   }
 }
 
@@ -67,16 +122,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
   },
   loading: {
     position: 'absolute',
