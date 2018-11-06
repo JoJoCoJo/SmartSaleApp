@@ -18,7 +18,7 @@ import {
   Image,
   Alert,
 } from 'react-native';
-
+import Dimensions from 'Dimensions';
 import SplashLogo from './assets/splash.png';
 
 const rootUrl = 'http://smart-sale.000webhostapp.com/api/v1'
@@ -37,19 +37,7 @@ export default class App extends Component<Props> {
   }
 
   componentDidMount(){
-    /*fetch('http://smart-sale.000webhostapp.com/api/v1/categories/read/')
-    .then(
-      (res) => {
-        return res.json()
-      }
-    )
-    .then(
-      (json) => {
-        this.setState({categories: json.data})
-        this.setState({view: 1})
-      }
-    )*/
-    setTimeout(() => this.setState({view: 1}), 3500)
+    setTimeout(() => this.setState({view: 'login'}), 3500)
   }
 
   onPressLogin(){
@@ -62,8 +50,8 @@ export default class App extends Component<Props> {
       (json) => {
         console.log('json login --->', json)
         if (json.code === 200) {
-          alert('Logeado')
-          this.setState({view: 2})       
+          alert('Sesión Iniciada.')
+          this.setState({view: 'menu'})       
         }else{
           alert('Usuario y/o contraseña incorrectos.')
         }
@@ -74,25 +62,33 @@ export default class App extends Component<Props> {
   renderView(){
     let render = []
     switch (this.state.view) {
-      case 1:
+      case 'login':
         return(
-          <ScrollView style={{padding: 20}}>
+          <ScrollView contentContainerStyle={styles.container}>
             <Text style={{fontSize: 27}}>
               Login
             </Text>
-            <TextInput placeholder='Username' onChangeText={(text) => this.setState({login_user: text})} value={this.state.login_user} />
-            <TextInput placeholder='Password' onChangeText={(text) => this.setState({login_pass: text})} value={this.state.login_pass} />
+            <TextInput style={styles.input} placeholder='Username' onChangeText={(text) => this.setState({login_user: text})} value={this.state.login_user} />
+            <TextInput style={styles.input} placeholder='Password' onChangeText={(text) => this.setState({login_pass: text})} value={this.state.login_pass} />
             <View style={{margin:7}} />
-            <Button onPress={() => this.onPressLogin()} title="Submit" />
+            <Button onPress={() => this.onPressLogin()} title="Entrar" />
           </ScrollView>
         )
       break;
-      case 2:
+      case 'menu':
         return(
-          <ScrollView style={{padding: 20}}>
+          <ScrollView contentContainerStyle={styles.container}>
             <Text style={{fontSize: 27}}>
-              Todo correcto.
+              Menú
             </Text>
+            <View style={{margin:7}} />
+            <Button onPress={() => console.log('Opción 1 clicked...')} title='Opción 1' />
+            <View style={{margin:7}} />
+            <Button onPress={() => console.log('Opción 2 clicked...')} title='Opción 2' />
+            <View style={{margin:7}} />
+            <Button onPress={() => console.log('Opción 3 clicked...')} title='Opción 3' />
+            <View style={{margin:7}} />
+            <Button onPress={() => console.log('Opción 4 clicked...')} title='Opción 4' />
           </ScrollView>
         )
       break;
@@ -118,6 +114,8 @@ export default class App extends Component<Props> {
   }
 }
 
+const DEVICE_WIDTH = Dimensions.get('window').width;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -133,5 +131,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: 'center',
     justifyContent: 'center'
-  }
+  },
+  input: {
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    width: DEVICE_WIDTH - 40,
+    height: 40,
+    paddingRight: 20,
+    paddingLeft: 20,
+    borderRadius: 20,
+  },
 });
