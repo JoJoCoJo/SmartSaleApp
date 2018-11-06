@@ -21,6 +21,8 @@ import {
 
 import SplashLogo from './assets/splash.png';
 
+const rootUrl = 'http://smart-sale.000webhostapp.com/api/v1'
+
 type Props = {};
 export default class App extends Component<Props> {
   constructor (props) {
@@ -52,7 +54,7 @@ export default class App extends Component<Props> {
 
   onPressLogin(){
     let { login_user, login_pass } = this.state
-    fetch(`http://smart-sale.000webhostapp.com/api/v1/users/login/?username=${login_user}&password=${login_pass}`)
+    fetch(`${rootUrl}/users/login/?username=${login_user}&password=${login_pass}`)
     .then(
       (res) => { return res.json() }
     )
