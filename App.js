@@ -17,6 +17,7 @@ import {
   ActivityIndicator,
   Image,
   Alert,
+  BackHandler
 } from 'react-native';
 import Dimensions from 'Dimensions';
 import SplashLogo from './assets/splash.png';
@@ -37,7 +38,24 @@ export default class App extends Component<Props> {
   }
 
   componentDidMount(){
+    BackHandler.addEventListener('hardwareBackPress', () => {
+        Alert.alert(
+          '',
+          '¿Desea salir de la app?\nSe cerrará la sesión por defecto.',
+          [ {text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+            {text: 'Salir', onPress: () => BackHandler.exitApp() },
+          ],
+          { cancelable: false }
+        )
+        return true;
+      }
+    );
+
     setTimeout(() => this.setState({view: 'login'}), 3500)
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress');
   }
 
   onPressLogin(){
