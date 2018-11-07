@@ -43,9 +43,7 @@ export default class App extends Component<Props> {
   onPressLogin(){
     let { login_user, login_pass } = this.state
     fetch(`${rootUrl}/users/login/?username=${login_user}&password=${login_pass}`)
-    .then(
-      (res) => { return res.json() }
-    )
+    .then((res) => { return res.json() })
     .then(
       (json) => {
         console.log('json login --->', json)
