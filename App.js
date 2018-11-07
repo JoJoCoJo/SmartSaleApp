@@ -17,7 +17,8 @@ import {
   ActivityIndicator,
   Image,
   Alert,
-  BackHandler
+  BackHandler,
+  ToolbarAndroid
 } from 'react-native';
 import Dimensions from 'Dimensions';
 import SplashLogo from './assets/splash.png';
@@ -35,6 +36,7 @@ export default class App extends Component<Props> {
       categories: {}
     }
     this.onPressLogin = this.onPressLogin.bind(this)
+    this.onActionSelected = this.onActionSelected.bind(this)
   }
 
   componentDidMount(){
@@ -89,7 +91,20 @@ export default class App extends Component<Props> {
             <View style={{margin:7}} />
             <Button onPress={() => this.onPressLogin()} title="Entrar" />
             <View style={{margin:14}} />
-            <Text style={styles.link}>¿No tienes cuenta? Regístrate.</Text>
+            <Text style={styles.link} onPress={() => this.setState({view: 'register'})}>¿No tienes cuenta? Regístrate.</Text>
+          </ScrollView>
+        )
+      break;
+      case 'register':
+        return(
+          <ScrollView contentContainerStyle={styles.container}>
+            <Text style={{fontSize: 27}}>
+              Registro
+            </Text>
+            <TextInput keyboardType='email-address' style={styles.input} placeholder='Username' onChangeText={(text) => this.setState({register_user: text})} value={this.state.register_user} />
+            <TextInput secureTextEntry={true} style={styles.input} placeholder='Password' onChangeText={(text) => this.setState({register_pass: text})} value={this.state.register_pass} />
+            <View style={{margin:7}} />
+            <Button onPress={() => this.onPressLogin()} title="Registrar" />
           </ScrollView>
         )
       break;
@@ -122,9 +137,22 @@ export default class App extends Component<Props> {
     }
   }
 
+  onActionSelected(position) {
+    if (position === 0) { // index of 'Settings'
+      this.setState({view: 'login'});
+    }
+  }
+
   render() {
     return(
       <View style={styles.container}>
+        <ToolbarAndroid
+          logo={SplashLogo}
+          title="SmartSaleApp"
+          actions={[{title: '<-', show: 'always'}]}
+          onActionSelected={this.onActionSelected} 
+          style={styles.toolbar}
+        />
         {/*<Text>{JSON.stringify(this.state)}</Text>*/}
         {this.renderView()}
       </View>
@@ -140,6 +168,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+  },
+  toolbar: {
+    backgroundColor: '#2196F3',
+    height: 30,
+    alignSelf: 'stretch',
   },
   loading: {
     position: 'absolute',
