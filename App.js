@@ -46,11 +46,11 @@ export default class App extends Component<Props> {
     .then((res) => { return res.json() })
     .then(
       (json) => {
-        console.log('json login --->', json)
         if (json.code === 200) {
           alert('Sesión Iniciada.')
           this.setState({view: 'menu'})       
         }else{
+          console.log('json login --->', json)
           alert('Usuario y/o contraseña incorrectos.')
         }
       }
