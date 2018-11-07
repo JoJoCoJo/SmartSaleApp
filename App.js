@@ -6,34 +6,131 @@
  * @flow
  */
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import React, { Component } from 'react';
+import {
+  Text,
+  Button,
+  TextInput,
+  View,
+  ScrollView,
+  StyleSheet,
+  ActivityIndicator,
+  Image,
+  Alert,
+  BackHandler
+} from 'react-native';
+import Dimensions from 'Dimensions';
+import SplashLogo from './assets/splash.png';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+const rootUrl = 'http://smart-sale.000webhostapp.com/api/v1'
 
 type Props = {};
 export default class App extends Component<Props> {
   constructor (props) {
     super(props)
     this.state = {
-      welcome: 'suuuuuuuup? from state'
+      view: 'default',
+      login_user: '',
+      login_pass: '',
+      categories: {}
+    }
+    this.onPressLogin = this.onPressLogin.bind(this)
+  }
+
+  componentDidMount(){
+    BackHandler.addEventListener('hardwareBackPress', () => {
+        Alert.alert(
+          '',
+          '¿Desea salir de la app?\nSe cerrará la sesión por defecto.',
+          [ {text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+            {text: 'Salir', onPress: () => BackHandler.exitApp() },
+          ],
+          { cancelable: false }
+        )
+        return true;
+      }
+    );
+
+    setTimeout(() => this.setState({view: 'login'}), 3500)
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress');
+  }
+
+  onPressLogin(){
+    let { login_user, login_pass } = this.state
+    fetch(`${rootUrl}/users/login/?username=${login_user}&password=${login_pass}`)
+    .then((res) => { return res.json() })
+    .then(
+      (json) => {
+        if (json.code === 200) {
+          alert('Sesión Iniciada.')
+          this.setState({view: 'menu'})       
+        }else{
+          console.log('json login --->', json)
+          alert('Usuario y/o contraseña incorrectos.')
+        }
+      }
+    )
+  }
+
+  renderView(){
+    let render = []
+    switch (this.state.view) {
+      case 'login':
+        return(
+          <ScrollView contentContainerStyle={styles.container}>
+            <Text style={{fontSize: 27}}>
+              Login
+            </Text>
+            <TextInput keyboardType='email-address' style={styles.input} placeholder='Username' onChangeText={(text) => this.setState({login_user: text})} value={this.state.login_user} />
+            <TextInput secureTextEntry={true} style={styles.input} placeholder='Password' onChangeText={(text) => this.setState({login_pass: text})} value={this.state.login_pass} />
+            <View style={{margin:7}} />
+            <Button onPress={() => this.onPressLogin()} title="Entrar" />
+          </ScrollView>
+        )
+      break;
+      case 'menu':
+        return(
+          <ScrollView contentContainerStyle={styles.container}>
+            <Text style={{fontSize: 27}}>
+              Menú
+            </Text>
+            <View style={{margin:7}} />
+            <Button onPress={() => console.log('Opción 1 clicked...')} title='Opción 1' />
+            <View style={{margin:7}} />
+            <Button onPress={() => console.log('Opción 2 clicked...')} title='Opción 2' />
+            <View style={{margin:7}} />
+            <Button onPress={() => console.log('Opción 3 clicked...')} title='Opción 3' />
+            <View style={{margin:7}} />
+            <Button onPress={() => console.log('Opción 4 clicked...')} title='Opción 4' />
+          </ScrollView>
+        )
+      break;
+      default:
+        return(
+          <View style={styles.loading}>
+            <Image
+              source={SplashLogo}
+            />
+          </View>
+        )
+      break;
     }
   }
+
   render() {
-    return (
+    return(
       <View style={styles.container}>
-        <Text style={styles.welcome}>{this.state.welcome}</Text>
-        <Text style={styles.instructions}>Whaaaaaaaaaats up???</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
+        {/*<Text>{JSON.stringify(this.state)}</Text>*/}
+        {this.renderView()}
       </View>
-    );
+    )
   }
 }
+
+const DEVICE_WIDTH = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   container: {
@@ -42,14 +139,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+  input: {
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    width: DEVICE_WIDTH - 40,
+    height: 40,
+    paddingRight: 20,
+    paddingLeft: 20,
+    borderRadius: 20,
   },
 });
