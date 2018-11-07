@@ -88,6 +88,8 @@ export default class App extends Component<Props> {
             <TextInput secureTextEntry={true} style={styles.input} placeholder='Password' onChangeText={(text) => this.setState({login_pass: text})} value={this.state.login_pass} />
             <View style={{margin:7}} />
             <Button onPress={() => this.onPressLogin()} title="Entrar" />
+            <View style={{margin:14}} />
+            <Text style={styles.link}>¿No tienes cuenta? Regístrate.</Text>
           </ScrollView>
         )
       break;
@@ -156,4 +158,8 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     borderRadius: 20,
   },
+  link: {
+    color: 'blue',
+    textDecorationLine: 'underline'
+  }
 });
