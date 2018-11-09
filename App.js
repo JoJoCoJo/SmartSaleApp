@@ -33,6 +33,10 @@ export default class App extends Component<Props> {
       view: 'default',
       login_user: '',
       login_pass: '',
+      register_user: '',
+      register_pass: '',
+      register_names: '',
+      register_last_names: '',
       categories: {}
     }
     this.onPressLogin = this.onPressLogin.bind(this)
@@ -67,18 +71,71 @@ export default class App extends Component<Props> {
     .then(
       (json) => {
         if (json.code === 200) {
-          alert('Sesión Iniciada.')
+          Alert.alert('', 'Sesión Iniciada.')
           this.setState({view: 'menu'})       
         }else{
           console.log('json login --->', json)
-          alert('Usuario y/o contraseña incorrectos.')
+          Alert.alert('', 'Usuario y/o contraseña incorrectos.')
         }
       }
     )
   }
 
+  onPressRegister(){
+    let {
+      register_user,
+      register_pass,
+      register_names,
+      register_last_names,
+    } = this.state
+
+    fetch(`${rootUrl}/users/create/?names=${register_names}&last_names=${register_last_names}&email=${register_user}&password=${register_pass}`)
+    .then(
+      (res) => {
+        return res.json();
+      }
+    )
+    .then(
+      (json) => {
+        console.log('json ---->', json)
+        let errors = ''
+        if (json.errors) {
+          if (json.errors.email) {
+            if (json.errors.email.length > 0) {
+              errors += `${json.errors.email[0]}\n`
+            }
+          }
+          if (json.errors.names) {
+            if (json.errors.names.length > 0) {
+              errors += `${json.errors.names[0]}\n`
+            }
+          }
+          if (json.errors.last_names) {
+            if (json.errors.last_names.length > 0) {
+              errors += `${json.errors.last_names[0]}\n`
+            }
+          }
+          if (json.errors.password) {
+            if (json.errors.password.length > 0) {
+              errors += `${json.errors.password[0]}\n`
+            }
+          }
+
+          if (errors !== '') {
+            Alert.alert('', errors)
+          }
+        }else if (json.code === 500 || json.code === null) {
+          errors += `${json.message}\n`
+          if (errors !== '') {
+            Alert.alert('', errors)
+          }
+        }else{ Alert.alert('', 'Usuario Creado correctamente.\nYa puede iniciar sesión.') }
+      }
+    )
+  }
+
   renderView(){
-    let render = []
+    let render = []    
     switch (this.state.view) {
       case 'login':
         return(
@@ -91,7 +148,7 @@ export default class App extends Component<Props> {
             <View style={{margin:7}} />
             <Button onPress={() => this.onPressLogin()} title="Entrar" />
             <View style={{margin:14}} />
-            <Text style={styles.link} onPress={() => this.setState({view: 'register'})}>¿No tienes cuenta? Regístrate.</Text>
+            <Text style={styles.link} onPress={() => this.setState({view: 'register'})}>¿No tienes cuenta? ¡Regístrate!</Text>
           </ScrollView>
         )
       break;
@@ -101,10 +158,14 @@ export default class App extends Component<Props> {
             <Text style={{fontSize: 27}}>
               Registro
             </Text>
-            <TextInput keyboardType='email-address' style={styles.input} placeholder='Username' onChangeText={(text) => this.setState({register_user: text})} value={this.state.register_user} />
-            <TextInput secureTextEntry={true} style={styles.input} placeholder='Password' onChangeText={(text) => this.setState({register_pass: text})} value={this.state.register_pass} />
+            <TextInput keyboardType='email-address' style={styles.input} placeholder='Ingrese su nombre(s):' onChangeText={(text) => this.setState({register_names: text})} value={this.state.register_names} />
+            <TextInput style={styles.input} placeholder='Ingrese su apellido(s):' onChangeText={(text) => this.setState({register_last_names: text})} value={this.state.register_last_names} />
+            <TextInput style={styles.input} placeholder='Ingrese su correo:' onChangeText={(text) => this.setState({register_user: text})} value={this.state.register_user} />
+            <TextInput secureTextEntry={true} style={styles.input} placeholder='Ingrese su contraseña:' onChangeText={(text) => this.setState({register_pass: text})} value={this.state.register_pass} />
             <View style={{margin:7}} />
-            <Button onPress={() => this.onPressLogin()} title="Registrar" />
+            <Button onPress={() => this.onPressRegister()} title="Registrar" />
+            <View style={{margin:14}} />
+            <Text style={styles.link} onPress={() => this.setState({view: 'login'})}>¿Ya tienes cuenta? ¡Ingresa!</Text>
           </ScrollView>
         )
       break;
@@ -148,12 +209,13 @@ export default class App extends Component<Props> {
       <View style={styles.container}>
         <ToolbarAndroid
           logo={SplashLogo}
+          overflowIcon={SplashLogo}
           title="SmartSaleApp"
           actions={[{title: '<-', show: 'always'}]}
           onActionSelected={this.onActionSelected} 
           style={styles.toolbar}
         />
-        {/*<Text>{JSON.stringify(this.state)}</Text>*/}
+        <Text>{JSON.stringify(this.state)}</Text>
         {this.renderView()}
       </View>
     )
