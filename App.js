@@ -205,6 +205,7 @@ export default class App extends Component<Props> {
   }
 
   render() {
+    console.log('render--- >')
     return(
       <View style={styles.container}>
         <ToolbarAndroid
