@@ -26,6 +26,51 @@ import Dimensions from 'Dimensions';
 import SplashLogo from './assets/splash.png';
 
 const rootUrl = 'http://smart-sale.000webhostapp.com/api/v1'
+const DEVICE_WIDTH = Dimensions.get('window').width;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  toolbar: {
+    backgroundColor: '#2196F3',
+    height: 30,
+    alignSelf: 'stretch',
+  },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  input: {
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    width: DEVICE_WIDTH - 40,
+    height: 40,
+    paddingRight: 20,
+    paddingLeft: 20,
+    borderRadius: 20,
+  },
+  link: {
+    color: 'blue',
+    textDecorationLine: 'underline'
+  },
+  linkBig: {
+    color: 'blue',
+    textDecorationLine: 'underline',
+    fontSize: 27
+  },  
+  imageMain: {
+    width: DEVICE_WIDTH - 63,
+    height: DEVICE_WIDTH - 60
+  }
+});
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -252,49 +297,3 @@ export default class App extends Component<Props> {
     )
   }
 }
-
-const DEVICE_WIDTH = Dimensions.get('window').width;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  toolbar: {
-    backgroundColor: '#2196F3',
-    height: 30,
-    alignSelf: 'stretch',
-  },
-  loading: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  input: {
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-    width: DEVICE_WIDTH - 40,
-    height: 40,
-    paddingRight: 20,
-    paddingLeft: 20,
-    borderRadius: 20,
-  },
-  link: {
-    color: 'blue',
-    textDecorationLine: 'underline'
-  },
-  linkBig: {
-    color: 'blue',
-    textDecorationLine: 'underline',
-    fontSize: 27
-  },  
-  imageMain: {
-    width: DEVICE_WIDTH - 63,
-    height: DEVICE_WIDTH - 60
-  }
-});
