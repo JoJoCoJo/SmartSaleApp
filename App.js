@@ -18,7 +18,9 @@ import {
   Image,
   Alert,
   BackHandler,
-  ToolbarAndroid
+  ToolbarAndroid,
+  Linking,
+  AsyncStorage 
 } from 'react-native';
 import Dimensions from 'Dimensions';
 import SplashLogo from './assets/splash.png';
@@ -57,11 +59,18 @@ export default class App extends Component<Props> {
       }
     );
 
+    Linking.addEventListener('url', this._handleOpenURL);
+
     setTimeout(() => this.setState({view: 'login'}), 3500)
   }
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress');
+    Linking.removeEventListener('url');
+  }
+
+  _handleOpenURL(url) {
+    Linking.openURL(url).catch(err => console.error('An error occurred', err));
   }
 
   onPressLogin(){
@@ -129,7 +138,10 @@ export default class App extends Component<Props> {
           if (errors !== '') {
             Alert.alert('', errors)
           }
-        }else{ Alert.alert('', 'Usuario Creado correctamente.\nYa puede iniciar sesión.') }
+        }else{
+          Alert.alert('', 'Usuario Creado correctamente.\nYa puede iniciar sesión.')
+          this.setState({view: 'tutorial'})
+        }
       }
     )
   }
@@ -186,10 +198,27 @@ export default class App extends Component<Props> {
           </ScrollView>
         )
       break;
+      case 'tutorial':
+        return(
+          <ScrollView contentContainerStyle={styles.container}>
+            <Image
+              style={styles.imageMain}
+              source={SplashLogo}
+            />
+            <View style={{margin:14}} />
+            <Text style={styles.linkBig} onPress={() => this._handleOpenURL('http://google.com')}>
+              Ver Tutorial
+            </Text>
+            <View style={{margin:14}} />
+            <Button onPress={() => this.setState({view: 'menu'})} title='Omitir' />
+          </ScrollView>
+        )
+      break;
       default:
         return(
           <View style={styles.loading}>
             <Image
+              style={styles.imageMain}
               source={SplashLogo}
             />
           </View>
@@ -207,15 +236,17 @@ export default class App extends Component<Props> {
   render() {
     return(
       <View style={styles.container}>
-        <ToolbarAndroid
-          logo={SplashLogo}
-          overflowIcon={SplashLogo}
-          title="SmartSaleApp"
-          actions={[{title: '<-', show: 'always'}]}
-          onActionSelected={this.onActionSelected} 
-          style={styles.toolbar}
-        />
-        <Text>{JSON.stringify(this.state)}</Text>
+        { this.state.view !== 'default' &&
+          <ToolbarAndroid
+            logo={SplashLogo}
+            overflowIcon={SplashLogo}
+            title="SmartSaleApp"
+            actions={[{title: 'BACK', show: 'always'}]}
+            onActionSelected={this.onActionSelected} 
+            style={styles.toolbar}
+          />
+        }
+        {/*<Text>{JSON.stringify(this.state)}</Text>*/}
         {this.renderView()}
       </View>
     )
@@ -256,5 +287,14 @@ const styles = StyleSheet.create({
   link: {
     color: 'blue',
     textDecorationLine: 'underline'
+  },
+  linkBig: {
+    color: 'blue',
+    textDecorationLine: 'underline',
+    fontSize: 27
+  },  
+  imageMain: {
+    width: DEVICE_WIDTH - 63,
+    height: DEVICE_WIDTH - 60
   }
 });
