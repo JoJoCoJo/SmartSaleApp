@@ -35,6 +35,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
+  containerMenu: {
+    width: DEVICE_WIDTH,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
   toolbar: {
     backgroundColor: '#2196F3',
     height: 30,
@@ -227,18 +233,23 @@ export default class App extends Component<Props> {
       break;
       case 'menu':
         return(
-          <ScrollView contentContainerStyle={styles.container}>
+          <ScrollView contentContainerStyle={styles.containerMenu}>
             <Text style={{fontSize: 27}}>
               Menú
             </Text>
             <View style={{margin:7}} />
-            <Button onPress={() => console.log('Opción 1 clicked...')} title='Opción 1' />
+            <Image
+              style={styles.imageMain}
+              source={SplashLogo}
+            />
+            <View style={{margin:14}} />
+            <Button onPress={() => console.log('Opción 1 clicked...')} title='Categorias' />
             <View style={{margin:7}} />
-            <Button onPress={() => console.log('Opción 2 clicked...')} title='Opción 2' />
+            <Button onPress={() => console.log('Opción 2 clicked...')} title='Productos' />
             <View style={{margin:7}} />
-            <Button onPress={() => console.log('Opción 3 clicked...')} title='Opción 3' />
+            <Button onPress={() => console.log('Opción 3 clicked...')} title='Ventas' />
             <View style={{margin:7}} />
-            <Button onPress={() => console.log('Opción 4 clicked...')} title='Opción 4' />
+            <Button onPress={() => console.log('Opción 4 clicked...')} title='Pronósticos' />
           </ScrollView>
         )
       break;
