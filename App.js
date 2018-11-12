@@ -84,7 +84,6 @@ export default class App extends Component<Props> {
       register_pass: '',
       register_names: '',
       register_last_names: '',
-      categories: {}
     }
     this.onPressLogin = this.onPressLogin.bind(this)
     this.onActionSelected = this.onActionSelected.bind(this)
