@@ -29,16 +29,14 @@ const rootUrl = 'http://smart-sale.000webhostapp.com/api/v1'
 const DEVICE_WIDTH = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
-  container: {
+  containerFlex: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  containerMenu: {
-    width: DEVICE_WIDTH,
-    justifyContent: 'center',
-    alignItems: 'center',
+  containerWithoutFlex: {
+    width: DEVICE_WIDTH - 150,
     backgroundColor: '#F5FCFF',
   },
   toolbar: {
@@ -72,9 +70,13 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     fontSize: 27
   },  
-  imageMain: {
+  logoBig: {
     width: DEVICE_WIDTH - 63,
     height: DEVICE_WIDTH - 60
+  },  
+  logoSmall: {
+    width: DEVICE_WIDTH - 152,
+    height: DEVICE_WIDTH - 150
   }
 });
 
@@ -201,7 +203,7 @@ export default class App extends Component<Props> {
     switch (this.state.view) {
       case 'login':
         return(
-          <ScrollView contentContainerStyle={styles.container}>
+          <ScrollView contentContainerStyle={styles.containerFlex}>
             <Text style={{fontSize: 27}}>
               Login
             </Text>
@@ -216,7 +218,7 @@ export default class App extends Component<Props> {
       break;
       case 'register':
         return(
-          <ScrollView contentContainerStyle={styles.container}>
+          <ScrollView contentContainerStyle={styles.containerFlex}>
             <Text style={{fontSize: 27}}>
               Registro
             </Text>
@@ -233,13 +235,15 @@ export default class App extends Component<Props> {
       break;
       case 'menu':
         return(
-          <ScrollView contentContainerStyle={styles.containerMenu}>
-            <Text style={{fontSize: 27}}>
-              Menú
-            </Text>
+          <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
+            <View style={styles.containerFlex}>
+              <Text style={{fontSize: 27}}>
+                Menú
+              </Text>
+            </View>
             <View style={{margin:7}} />
             <Image
-              style={styles.imageMain}
+              style={styles.logoSmall}
               source={SplashLogo}
             />
             <View style={{margin:14}} />
@@ -255,9 +259,9 @@ export default class App extends Component<Props> {
       break;
       case 'tutorial':
         return(
-          <ScrollView contentContainerStyle={styles.container}>
+          <ScrollView contentContainerStyle={styles.containerFlex}>
             <Image
-              style={styles.imageMain}
+              style={styles.logoBig}
               source={SplashLogo}
             />
             <View style={{margin:14}} />
@@ -273,7 +277,7 @@ export default class App extends Component<Props> {
         return(
           <View style={styles.loading}>
             <Image
-              style={styles.imageMain}
+              style={styles.logoBig}
               source={SplashLogo}
             />
           </View>
@@ -290,7 +294,7 @@ export default class App extends Component<Props> {
 
   render() {
     return(
-      <View style={styles.container}>
+      <View style={styles.containerFlex}>
         { this.state.view !== 'default' &&
           <ToolbarAndroid
             logo={SplashLogo}
