@@ -149,6 +149,8 @@ export default class App extends Component<Props> {
   }
 
   onPressRegister(){
+    this.setState({loading: true})
+
     let {
       register_user,
       register_pass,
@@ -167,6 +169,7 @@ export default class App extends Component<Props> {
         console.log('json ---->', json)
         let errors = ''
         if (json.errors) {
+          this.setState({loading: false})
           if (json.errors.email) {
             if (json.errors.email.length > 0) {
               errors += `${json.errors.email[0]}\n`
@@ -192,12 +195,14 @@ export default class App extends Component<Props> {
             Alert.alert('', errors)
           }
         }else if (json.code === 500 || json.code === null) {
+          this.setState({loading: false})
           errors += `${json.message}\n`
           if (errors !== '') {
             Alert.alert('', errors)
           }
         }else{
           Alert.alert('', 'Usuario Creado correctamente.\nYa puede iniciar sesión.')
+          this.setState({loading: false})
           this.setState({user: json.data})
           this.setState({view: 'tutorial'})
         }
