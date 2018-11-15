@@ -86,6 +86,7 @@ export default class App extends Component<Props> {
     super(props)
     this.state = {
       view: 'default',
+      user: {},
       login_user: '',
       login_pass: '',
       register_user: '',
@@ -132,10 +133,10 @@ export default class App extends Component<Props> {
     .then(
       (json) => {
         if (json.code === 200) {
-          Alert.alert('', 'Sesión Iniciada.')
-          this.setState({view: 'menu'})       
+          this.setState({user: json.data[0]})
+          this.setState({view: 'menu'})
         }else{
-          console.log('json login --->', json)
+          console.log('json else --->', json)
           Alert.alert('', 'Usuario y/o contraseña incorrectos.')
         }
       }
@@ -192,6 +193,7 @@ export default class App extends Component<Props> {
           }
         }else{
           Alert.alert('', 'Usuario Creado correctamente.\nYa puede iniciar sesión.')
+          this.setState({user: json.data})
           this.setState({view: 'tutorial'})
         }
       }
@@ -293,6 +295,7 @@ export default class App extends Component<Props> {
   }
 
   render() {
+    console.log('this.state ---->', this.state)
     return(
       <View style={styles.containerFlex}>
         { this.state.view !== 'default' &&
