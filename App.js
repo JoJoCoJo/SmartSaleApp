@@ -209,8 +209,8 @@ export default class App extends Component<Props> {
             <Text style={{fontSize: 27}}>
               Login
             </Text>
-            <TextInput keyboardType='email-address' style={styles.input} placeholder='Username' onChangeText={(text) => this.setState({login_user: text})} value={this.state.login_user} />
-            <TextInput secureTextEntry={true} style={styles.input} placeholder='Password' onChangeText={(text) => this.setState({login_pass: text})} value={this.state.login_pass} />
+            <TextInput keyboardType='email-address' style={styles.input} placeholder='Correo' onChangeText={(text) => this.setState({login_user: text})} value={this.state.login_user} />
+            <TextInput secureTextEntry={true} style={styles.input} placeholder='Contraseña' onChangeText={(text) => this.setState({login_pass: text})} value={this.state.login_pass} />
             <View style={{margin:7}} />
             <Button onPress={() => this.onPressLogin()} title="Entrar" />
             <View style={{margin:14}} />
