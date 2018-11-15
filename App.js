@@ -86,6 +86,7 @@ export default class App extends Component<Props> {
     super(props)
     this.state = {
       view: 'default',
+      loading: false,
       user: {},
       login_user: '',
       login_pass: '',
@@ -127,7 +128,9 @@ export default class App extends Component<Props> {
   }
 
   onPressLogin(){
+    this.setState({loading: true})
     let { login_user, login_pass } = this.state
+
     fetch(`${rootUrl}/users/login/?username=${login_user}&password=${login_pass}`)
     .then((res) => { return res.json() })
     .then(
@@ -135,8 +138,10 @@ export default class App extends Component<Props> {
         if (json.code === 200) {
           this.setState({user: json.data[0]})
           this.setState({view: 'menu'})
+          this.setState({loading: false})
         }else{
           console.log('json else --->', json)
+          this.setState({loading: false})
           Alert.alert('', 'Usuario y/o contraseña incorrectos.')
         }
       }
@@ -374,7 +379,7 @@ export default class App extends Component<Props> {
     console.log('this.state ---->', this.state)
     return(
       <View style={styles.containerFlex}>
-        { this.state.view !== 'default' &&
+        { this.state.view !== 'default' && this.state.loading === false &&
           <ToolbarAndroid
             logo={SplashLogo}
             overflowIcon={SplashLogo}
@@ -384,8 +389,12 @@ export default class App extends Component<Props> {
             style={styles.toolbar}
           />
         }
-        {/*<Text>{JSON.stringify(this.state)}</Text>*/}
-        {this.renderView()}
+        { this.state.loading &&
+          <View style={styles.loading}>
+            <ActivityIndicator size="large" color="#00ff00" />
+          </View>
+        }
+        { this.state.loading === false && this.renderView() }
       </View>
     )
   }
