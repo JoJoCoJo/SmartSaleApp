@@ -249,13 +249,13 @@ export default class App extends Component<Props> {
               source={SplashLogo}
             />
             <View style={{margin:14}} />
-            <Button onPress={() => console.log('Opción 1 clicked...')} title='Categorias' />
+            <Button onPress={() => this.setState({view: 'optionCategories'})} title='Categorias' />
             <View style={{margin:7}} />
-            <Button onPress={() => console.log('Opción 2 clicked...')} title='Productos' />
+            <Button onPress={() => this.setState({view: 'optionProducts'})} title='Productos' />
             <View style={{margin:7}} />
-            <Button onPress={() => console.log('Opción 3 clicked...')} title='Ventas' />
+            <Button onPress={() => this.setState({view: 'optionSales'})} title='Ventas' />
             <View style={{margin:7}} />
-            <Button onPress={() => console.log('Opción 4 clicked...')} title='Pronósticos' />
+            <Button onPress={() => this.setState({view: 'optionForecast'})} title='Pronósticos' />
           </ScrollView>
         )
       break;
@@ -272,6 +272,82 @@ export default class App extends Component<Props> {
             </Text>
             <View style={{margin:14}} />
             <Button onPress={() => this.setState({view: 'menu'})} title='Omitir' />
+          </ScrollView>
+        )
+      break;
+      case 'optionCategories':
+        return(
+          <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
+            <View style={styles.containerFlex}>
+              <Text style={{fontSize: 27}}>
+                Categorias
+              </Text>
+            </View>
+            <View style={{margin:7}} />
+            <Image
+              style={styles.logoSmall}
+              source={SplashLogo}
+            />
+            <View style={{margin:14}} />
+            <Button onPress={() => console.log('Nueva Categorias clicked...')} title='Nueva Categoria' />
+            <View style={{margin:7}} />
+          </ScrollView>
+        )
+      break;
+      case 'optionProducts':
+        return(
+          <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
+            <View style={styles.containerFlex}>
+              <Text style={{fontSize: 27}}>
+                Productos
+              </Text>
+            </View>
+            <View style={{margin:7}} />
+            <Image
+              style={styles.logoSmall}
+              source={SplashLogo}
+            />
+            <View style={{margin:14}} />
+            <Button onPress={() => console.log('Nuevo Productos...')} title='Nuevo Producto' />
+            <View style={{margin:7}} />
+          </ScrollView>
+        )
+      break;
+      case 'optionSales':
+        return(
+          <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
+            <View style={styles.containerFlex}>
+              <Text style={{fontSize: 27}}>
+                Ventas
+              </Text>
+            </View>
+            <View style={{margin:7}} />
+            <Image
+              style={styles.logoSmall}
+              source={SplashLogo}
+            />
+            <View style={{margin:14}} />
+            <Button onPress={() => console.log('Nueva Venta clicked...')} title='Nueva Venta' />
+            <View style={{margin:7}} />
+          </ScrollView>
+        )
+      break;
+      case 'optionForecast':
+        return(
+          <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
+            <View style={styles.containerFlex}>
+              <Text style={{fontSize: 27}}>
+                Pronósticos
+              </Text>
+            </View>
+            <View style={{margin:7}} />
+            <Image
+              style={styles.logoSmall}
+              source={SplashLogo}
+            />
+            <View style={{margin:14}} />
+            <Button onPress={() => console.log('Nuevo Pronostico clicked...')} title='Nuevo Pronóstico' />
+            <View style={{margin:7}} />
           </ScrollView>
         )
       break;
