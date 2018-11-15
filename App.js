@@ -29,10 +29,14 @@ const rootUrl = 'http://smart-sale.000webhostapp.com/api/v1'
 const DEVICE_WIDTH = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
-  container: {
+  containerFlex: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  containerWithoutFlex: {
+    width: DEVICE_WIDTH - 150,
     backgroundColor: '#F5FCFF',
   },
   toolbar: {
@@ -66,9 +70,13 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     fontSize: 27
   },  
-  imageMain: {
+  logoBig: {
     width: DEVICE_WIDTH - 63,
     height: DEVICE_WIDTH - 60
+  },  
+  logoSmall: {
+    width: DEVICE_WIDTH - 152,
+    height: DEVICE_WIDTH - 150
   }
 });
 
@@ -78,13 +86,13 @@ export default class App extends Component<Props> {
     super(props)
     this.state = {
       view: 'default',
+      user: {},
       login_user: '',
       login_pass: '',
       register_user: '',
       register_pass: '',
       register_names: '',
       register_last_names: '',
-      categories: {}
     }
     this.onPressLogin = this.onPressLogin.bind(this)
     this.onActionSelected = this.onActionSelected.bind(this)
@@ -125,10 +133,10 @@ export default class App extends Component<Props> {
     .then(
       (json) => {
         if (json.code === 200) {
-          Alert.alert('', 'Sesión Iniciada.')
-          this.setState({view: 'menu'})       
+          this.setState({user: json.data[0]})
+          this.setState({view: 'menu'})
         }else{
-          console.log('json login --->', json)
+          console.log('json else --->', json)
           Alert.alert('', 'Usuario y/o contraseña incorrectos.')
         }
       }
@@ -185,6 +193,7 @@ export default class App extends Component<Props> {
           }
         }else{
           Alert.alert('', 'Usuario Creado correctamente.\nYa puede iniciar sesión.')
+          this.setState({user: json.data})
           this.setState({view: 'tutorial'})
         }
       }
@@ -196,7 +205,7 @@ export default class App extends Component<Props> {
     switch (this.state.view) {
       case 'login':
         return(
-          <ScrollView contentContainerStyle={styles.container}>
+          <ScrollView contentContainerStyle={styles.containerFlex}>
             <Text style={{fontSize: 27}}>
               Login
             </Text>
@@ -211,7 +220,7 @@ export default class App extends Component<Props> {
       break;
       case 'register':
         return(
-          <ScrollView contentContainerStyle={styles.container}>
+          <ScrollView contentContainerStyle={styles.containerFlex}>
             <Text style={{fontSize: 27}}>
               Registro
             </Text>
@@ -228,26 +237,33 @@ export default class App extends Component<Props> {
       break;
       case 'menu':
         return(
-          <ScrollView contentContainerStyle={styles.container}>
-            <Text style={{fontSize: 27}}>
-              Menú
-            </Text>
+          <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
+            <View style={styles.containerFlex}>
+              <Text style={{fontSize: 27}}>
+                Menú
+              </Text>
+            </View>
             <View style={{margin:7}} />
-            <Button onPress={() => console.log('Opción 1 clicked...')} title='Opción 1' />
+            <Image
+              style={styles.logoSmall}
+              source={SplashLogo}
+            />
+            <View style={{margin:14}} />
+            <Button onPress={() => console.log('Opción 1 clicked...')} title='Categorias' />
             <View style={{margin:7}} />
-            <Button onPress={() => console.log('Opción 2 clicked...')} title='Opción 2' />
+            <Button onPress={() => console.log('Opción 2 clicked...')} title='Productos' />
             <View style={{margin:7}} />
-            <Button onPress={() => console.log('Opción 3 clicked...')} title='Opción 3' />
+            <Button onPress={() => console.log('Opción 3 clicked...')} title='Ventas' />
             <View style={{margin:7}} />
-            <Button onPress={() => console.log('Opción 4 clicked...')} title='Opción 4' />
+            <Button onPress={() => console.log('Opción 4 clicked...')} title='Pronósticos' />
           </ScrollView>
         )
       break;
       case 'tutorial':
         return(
-          <ScrollView contentContainerStyle={styles.container}>
+          <ScrollView contentContainerStyle={styles.containerFlex}>
             <Image
-              style={styles.imageMain}
+              style={styles.logoBig}
               source={SplashLogo}
             />
             <View style={{margin:14}} />
@@ -263,7 +279,7 @@ export default class App extends Component<Props> {
         return(
           <View style={styles.loading}>
             <Image
-              style={styles.imageMain}
+              style={styles.logoBig}
               source={SplashLogo}
             />
           </View>
@@ -279,8 +295,9 @@ export default class App extends Component<Props> {
   }
 
   render() {
+    console.log('this.state ---->', this.state)
     return(
-      <View style={styles.container}>
+      <View style={styles.containerFlex}>
         { this.state.view !== 'default' &&
           <ToolbarAndroid
             logo={SplashLogo}
