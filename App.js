@@ -136,14 +136,22 @@ export default class App extends Component<Props> {
     .then(
       (json) => {
         if (json.code === 200) {
-          this.setState({user: json.data[0]})
-          this.setState({view: 'menu'})
-          this.setState({loading: false})
+          console.log('json if ---->', json)
+          return fetch(`${rootUrl}/users/read/${json.data[0].id_user}/categories,products,sales,SalesProducts,forecasts`);
         }else{
           console.log('json else --->', json)
           this.setState({loading: false})
           Alert.alert('', 'Usuario y/o contraseña incorrectos.')
         }
+      }
+    )
+    .then((dataUser) => { console.log('dataUser first --->', dataUser); return dataUser.json() })
+    .then(
+      (dataUserRes) => {
+        console.log('dataUserRes ---->', dataUserRes.data[0])
+        this.setState({user: dataUserRes.data[0]})
+        this.setState({view: 'menu'})
+        this.setState({loading: false})
       }
     )
   }
@@ -301,6 +309,17 @@ export default class App extends Component<Props> {
             <View style={{margin:14}} />
             <Button onPress={() => console.log('Nueva Categorias clicked...')} title='Nueva Categoria' />
             <View style={{margin:7}} />
+            <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'stretch' }}>
+              <View style={{ flex: 1, alignSelf: 'stretch' }} >
+                <Text>suuuuuup?</Text>
+              </View>
+              <View style={{ flex: 1, alignSelf: 'stretch' }} >
+                <Text>suuuuuup?</Text>
+              </View>
+              <View style={{ flex: 1, alignSelf: 'stretch' }} >
+                <Text>suuuuuup?</Text>
+              </View>
+            </View>
           </ScrollView>
         )
       break;
