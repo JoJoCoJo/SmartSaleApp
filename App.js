@@ -74,6 +74,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10
   },
+  textArea: {
+    width: DEVICE_WIDTH - 75,
+    height: 150,
+    paddingRight: 20,
+    paddingLeft: 20,
+    borderRadius: 20,
+    borderColor: 'black',
+    borderWidth: 1,
+    marginBottom: 10
+  },
   link: {
     color: 'blue',
     textDecorationLine: 'underline'
@@ -131,6 +141,8 @@ export default class App extends Component<Props> {
       register_pass: '',
       register_names: '',
       register_last_names: '',
+      add_category_name: '',
+      add_category_description: '',
     }
     this.onPressLogin = this.onPressLogin.bind(this)
     this.onActionSelected = this.onActionSelected.bind(this)
@@ -596,8 +608,28 @@ export default class App extends Component<Props> {
   }
 
   onActionSelected(position) {
+    let { view } = this.state
     if (position === 0) { // index of 'Settings'
-      this.setState({view: 'login'});
+      switch (view) {
+        case 'register':
+          this.setState({view: 'login'});
+        break;
+        case 'menu':
+          this.setState({view: 'login'});
+        break;
+        case 'optionCategories':
+          this.setState({view: 'menu'});
+        break;
+        case 'optionProducts':
+          this.setState({view: 'menu'});
+        break;
+        case 'optionSales':
+          this.setState({view: 'menu'});
+        break;
+        case 'optionForecast':
+          this.setState({view: 'menu'});
+        break;
+      }
     }
   }
 
@@ -634,9 +666,21 @@ export default class App extends Component<Props> {
           onRequestClose={() => this.setState({modalAddVisible: false})}
         >
           { this.state.modalAddType === 'categories' ?
-              <View>
-                <Text>Agregar categorias</Text>
-              </View>
+              <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
+                <View style={styles.containerFlex}>
+                  <View style={{margin:7}} />
+                  <Text style={{fontSize: 27}}>
+                    Nueva Categoria
+                  </Text>
+                </View>
+                <View style={{margin:14}} />
+                <TextInput style={styles.input} placeholder='Nombre de la categoria:' onChangeText={(text) => this.setState({add_category_name: text})} value={this.state.add_category_name} />
+                <TextInput style={styles.textArea} multiline={true} numberOfLines={10} placeholder='Descripción de la categoria: (Opcional)' onChangeText={(text) => this.setState({add_category_description: text})} value={this.state.add_category_description} />
+                {/*<TextInput keyboardType='email-address' style={styles.input} placeholder='Ingrese su correo:' onChangeText={(text) => this.setState({register_user: text})} value={this.state.register_user} />
+                                <TextInput keyboardType='email-address' style={styles.input} placeholder='Ingrese su correo:' onChangeText={(text) => this.setState({register_user: text})} value={this.state.register_user} />*/}
+                <Button onPress={() => this.setState({modalAddVisible: false})} title='Guardar' />
+                <View style={{margin:7}} />
+              </ScrollView>
             :
             this.state.modalAddType === 'products' ?
               <View>
@@ -652,7 +696,6 @@ export default class App extends Component<Props> {
                 <Text>Agregar pronósticos</Text>
               </View>
           }
-          <Text onPress={() => this.setState({modalAddVisible: false})}>HideModal</Text>
         </Modal>        
         { this.renderView() }
       </View>
