@@ -21,7 +21,8 @@ import {
   ToolbarAndroid,
   Linking,
   AsyncStorage,
-  TouchableOpacity
+  TouchableOpacity,
+  Modal
 } from 'react-native';
 import Dimensions from 'Dimensions';
 import SplashLogo from './assets/splash.png';
@@ -48,13 +49,20 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
   loading: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
+    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    backgroundColor: '#00000040'
+  },
+  loadingWrapper: {
+    backgroundColor: '#FFFFFF',
+    height: 100,
+    width: 100,
+    borderRadius: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-around'
   },
   input: {
     backgroundColor: 'rgba(255, 255, 255, 0.4)',
@@ -484,7 +492,7 @@ export default class App extends Component<Props> {
       break;
       default:
         return(
-          <View style={styles.loading}>
+          <View style={styles.containerFlex}>
             <Image
               style={styles.logoBig}
               source={SplashLogo}
@@ -505,7 +513,7 @@ export default class App extends Component<Props> {
     console.log('this.state.user ---->', this.state.user)
     return(
       <View style={styles.containerFlex}>
-        { this.state.view !== 'default' && this.state.loading === false &&
+        { this.state.view !== 'default' &&
           <ToolbarAndroid
             logo={SplashLogo}
             overflowIcon={SplashLogo}
@@ -515,12 +523,19 @@ export default class App extends Component<Props> {
             style={styles.toolbar}
           />
         }
-        { this.state.loading &&
+        <Modal
+          transparent={true}
+          animationType={'none'}
+          visible={this.state.loading}
+          onRequestClose={() => {console.log('close modal')}}
+        >
           <View style={styles.loading}>
-            <ActivityIndicator size="large" color="#00ff00" />
+            <View style={styles.loadingWrapper}>
+              <ActivityIndicator size="large" color="#00ff00" />
+            </View>
           </View>
-        }
-        { this.state.loading === false && this.renderView() }
+        </Modal>
+        { this.renderView() }
       </View>
     )
   }
