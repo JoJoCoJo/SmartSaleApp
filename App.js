@@ -40,8 +40,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
   },
   containerWithoutFlex: {
-    width: DEVICE_WIDTH - 75,
-    backgroundColor: '#F5FCFF',
+    width: DEVICE_WIDTH,
+    paddingRight: 35,
+    paddingLeft: 35,
   },
   toolbar: {
     backgroundColor: '#2196F3',
@@ -253,14 +254,14 @@ export default class App extends Component<Props> {
     )
   }
 
-  onPressDeleteIcon(table, id){
+  onPressDeleteIcon(table, id_name, id){
     Alert.alert(
       '',
       '¿Desea eliminar el registro?',
       [ {text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
         {text: 'Eliminar', onPress: () => {
             this.setState({loading: true})
-            fetch(`${rootUrl}/${table}/delete/?id_category=${id}`)
+            fetch(`${rootUrl}/${table}/delete/?${id_name}=${id}`)
             .then(
               (res) => { console.log('res --->', res); return res.json(); }
             )
@@ -419,7 +420,7 @@ export default class App extends Component<Props> {
                           </TouchableOpacity>
                         </View>
                         <View style={{ flex: 1 }} >
-                          <TouchableOpacity onPress={() => this.onPressDeleteIcon('categories', category.id_category)}>
+                          <TouchableOpacity onPress={() => this.onPressDeleteIcon('categories', 'id_category', category.id_category)}>
                             <Image style={styles.imagesActions} source={DeleteImage} />
                           </TouchableOpacity>
                         </View>
@@ -451,6 +452,33 @@ export default class App extends Component<Props> {
             <View style={{margin:14}} />
             <Button onPress={() => console.log('Nuevo Productos...')} title='Nuevo Producto' />
             <View style={{margin:7}} />
+            { this.state.user.products && this.state.user.products.length > 0 ?
+                this.state.user.products.map(
+                  (product, c) => {
+                    return(
+                      <View style={styles.card} key={c}>
+                        <View style={{ flex: 5, alignSelf: 'stretch' }} >
+                          <Text>{product.name}</Text>
+                        </View>
+                        <View style={{ flex: 1 }} >
+                          <TouchableOpacity onPress={() => this.onPressUpdateCategory(product.id_product)}>
+                            <Image style={styles.imagesActions} source={UpdateImage} />
+                          </TouchableOpacity>
+                        </View>
+                        <View style={{ flex: 1 }} >
+                          <TouchableOpacity onPress={() => this.onPressDeleteIcon('products', 'id_product', product.id_product)}>
+                            <Image style={styles.imagesActions} source={DeleteImage} />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    )
+                  }
+                )
+              :
+              <View style={styles.card}>
+                <Text>No hay productos disponibles.</Text>
+              </View>
+            }
           </ScrollView>
         )
       break;
