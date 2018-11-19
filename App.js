@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
   },
   containerWithoutFlex: {
     width: DEVICE_WIDTH,
@@ -111,8 +110,8 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     elevation : 3,
     padding: 5,
-    marginTop: 10,
-    marginBottom: 10,
+    marginTop: 5,
+    marginBottom: 5,
   },
 });
 
@@ -411,15 +410,15 @@ export default class App extends Component<Props> {
                   (category, c) => {
                     return(
                       <View style={styles.card} key={c}>
-                        <View style={{ flex: 5, alignSelf: 'stretch' }} >
+                        <View style={{ flex: 5, alignSelf: 'stretch', padding: 5 }} >
                           <Text>{category.name}</Text>
                         </View>
-                        <View style={{ flex: 1 }} >
+                        <View style={styles.containerFlex} >
                           <TouchableOpacity onPress={() => this.onPressUpdateCategory(category.id_category)}>
                             <Image style={styles.imagesActions} source={UpdateImage} />
                           </TouchableOpacity>
                         </View>
-                        <View style={{ flex: 1 }} >
+                        <View style={styles.containerFlex} >
                           <TouchableOpacity onPress={() => this.onPressDeleteIcon('categories', 'id_category', category.id_category)}>
                             <Image style={styles.imagesActions} source={DeleteImage} />
                           </TouchableOpacity>
@@ -457,15 +456,15 @@ export default class App extends Component<Props> {
                   (product, c) => {
                     return(
                       <View style={styles.card} key={c}>
-                        <View style={{ flex: 5, alignSelf: 'stretch' }} >
+                        <View style={{ flex: 5, alignSelf: 'stretch', padding: 5 }} >
                           <Text>{product.name}</Text>
                         </View>
-                        <View style={{ flex: 1 }} >
+                        <View style={styles.containerFlex} >
                           <TouchableOpacity onPress={() => this.onPressUpdateCategory(product.id_product)}>
                             <Image style={styles.imagesActions} source={UpdateImage} />
                           </TouchableOpacity>
                         </View>
-                        <View style={{ flex: 1 }} >
+                        <View style={styles.containerFlex} >
                           <TouchableOpacity onPress={() => this.onPressDeleteIcon('products', 'id_product', product.id_product)}>
                             <Image style={styles.imagesActions} source={DeleteImage} />
                           </TouchableOpacity>
