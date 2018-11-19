@@ -300,6 +300,7 @@ export default class App extends Component<Props> {
         return(
           <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
             <View style={styles.containerFlex}>
+              <View style={{margin:7}} />
               <Text style={{fontSize: 27}}>
                 Login
               </Text>
@@ -326,6 +327,7 @@ export default class App extends Component<Props> {
         return(
           <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
             <View style={styles.containerFlex}>
+              <View style={{margin:7}} />
               <Text style={{fontSize: 27}}>
                 Registro
               </Text>
@@ -353,6 +355,7 @@ export default class App extends Component<Props> {
         return(
           <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
             <View style={styles.containerFlex}>
+              <View style={{margin:7}} />
               <Text style={{fontSize: 27}}>
                 Menú
               </Text>
@@ -393,6 +396,7 @@ export default class App extends Component<Props> {
         return(
           <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
             <View style={styles.containerFlex}>
+              <View style={{margin:7}} />
               <Text style={{fontSize: 27}}>
                 Categorias
               </Text>
@@ -439,6 +443,7 @@ export default class App extends Component<Props> {
         return(
           <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
             <View style={styles.containerFlex}>
+              <View style={{margin:7}} />
               <Text style={{fontSize: 27}}>
                 Productos
               </Text>
@@ -485,6 +490,7 @@ export default class App extends Component<Props> {
         return(
           <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
             <View style={styles.containerFlex}>
+              <View style={{margin:7}} />
               <Text style={{fontSize: 27}}>
                 Ventas
               </Text>
@@ -531,6 +537,7 @@ export default class App extends Component<Props> {
         return(
           <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
             <View style={styles.containerFlex}>
+              <View style={{margin:7}} />
               <Text style={{fontSize: 27}}>
                 Pronósticos
               </Text>
