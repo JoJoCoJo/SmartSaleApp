@@ -20,7 +20,8 @@ import {
   BackHandler,
   ToolbarAndroid,
   Linking,
-  AsyncStorage 
+  AsyncStorage,
+  TouchableOpacity
 } from 'react-native';
 import Dimensions from 'Dimensions';
 import SplashLogo from './assets/splash.png';
@@ -83,7 +84,25 @@ const styles = StyleSheet.create({
   logoSmall: {
     width: DEVICE_WIDTH - 152,
     height: DEVICE_WIDTH - 150
-  }
+  },
+  card: {
+    flex: 1,
+    flexDirection: 'row',
+    alignSelf: 'stretch',
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 3,
+      height: 3
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    backgroundColor: '#ffffff',
+    borderRadius: 3,
+    elevation : 3,
+    padding: 5,
+    marginTop: 10,
+    marginBottom: 10,
+  },
 });
 
 type Props = {};
@@ -336,17 +355,29 @@ export default class App extends Component<Props> {
             <View style={{margin:14}} />
             <Button onPress={() => console.log('Nueva Categorias clicked...')} title='Nueva Categoria' />
             <View style={{margin:7}} />
-            <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'stretch' }}>
-              <View style={{ flex: 2, alignSelf: 'stretch' }} >
-                <Text>suuuuuup?</Text>
+            { this.state.user.categories.length > 0 ?
+                this.state.user.categories.map(
+                  (category, c) => {
+                    return(
+                      <View style={styles.card} key={c}>
+                        <View style={{ flex: 2, alignSelf: 'stretch' }} >
+                          <Text>{category.name}</Text>
+                        </View>
+                        <View style={{ marginLeft: 20 }} >
+                          <Image style={styles.imagesActions} source={UpdateImage} />
+                        </View>
+                        <View style={{ marginLeft: 20 }} >
+                          <Image style={styles.imagesActions} source={DeleteImage} />
+                        </View>
+                      </View>
+                    )
+                  }
+                )
+              :
+              <View style={styles.card}>
+                <Text>No hay categorias disponibles.</Text>
               </View>
-              <View style={{ flex: 1, alignSelf: 'stretch' }} >
-                <Image style={styles.imagesActions} source={UpdateImage} />
-              </View>
-              <View style={{ flex: 1, alignSelf: 'stretch' }} >
-                <Image style={styles.imagesActions} source={DeleteImage} />
-              </View>
-            </View>
+            }
           </ScrollView>
         )
       break;
