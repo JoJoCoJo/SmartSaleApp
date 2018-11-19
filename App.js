@@ -160,6 +160,9 @@ export default class App extends Component<Props> {
       case 'register':
         this.setState({view: 'login'});
       break;
+      case 'tutorial':
+        this.setState({view: 'register'});
+      break;
       case 'menu':
         Alert.alert(
           '',
