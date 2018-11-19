@@ -122,6 +122,8 @@ export default class App extends Component<Props> {
     this.state = {
       view: 'default',
       loading: false,
+      modalAddVisible: false,
+      modalAddType: '',
       user: {},
       login_user: 'jojo@msn.com',
       login_pass: '1234567',
@@ -407,7 +409,7 @@ export default class App extends Component<Props> {
               />
             </View>
             <View style={{margin:14}} />
-            <Button onPress={() => console.log('Nueva Categorias clicked...')} title='Nueva Categoria' />
+            <Button onPress={() => this.setState({modalAddVisible: true, modalAddType: 'categories'})} title='Nueva Categoria' />
             <View style={{margin:7}} />
             { this.state.user.categories && this.state.user.categories.length > 0 ?
                 this.state.user.categories.map(
@@ -454,7 +456,7 @@ export default class App extends Component<Props> {
               />
             </View>
             <View style={{margin:14}} />
-            <Button onPress={() => console.log('Nuevo Productos...')} title='Nuevo Producto' />
+            <Button onPress={() => this.setState({modalAddVisible: true, modalAddType: 'products'})} title='Nuevo Producto' />
             <View style={{margin:7}} />
             { this.state.user.products && this.state.user.products.length > 0 ?
                 this.state.user.products.map(
@@ -501,7 +503,7 @@ export default class App extends Component<Props> {
               />
             </View>
             <View style={{margin:7}} />
-            <Button onPress={() => console.log('Nueva Venta clicked...')} title='Nueva Venta' />
+            <Button onPress={() => this.setState({modalAddVisible: true, modalAddType: 'sales'})} title='Nueva Venta' />
             <View style={{margin:7}} />
             { this.state.user.sales && this.state.user.sales.length > 0 ?
                 this.state.user.sales.map(
@@ -548,7 +550,7 @@ export default class App extends Component<Props> {
               />
             </View>
             <View style={{margin:7}} />
-            <Button onPress={() => console.log('Nuevo Pronostico clicked...')} title='Nuevo Pronóstico' />
+            <Button onPress={() => this.setState({modalAddVisible: true, modalAddType: 'forecasts'})} title='Nuevo Pronóstico' />
             <View style={{margin:7}} />
             { this.state.user.forecasts && this.state.user.forecasts.length > 0 ?
                 this.state.user.forecasts.map(
@@ -617,7 +619,7 @@ export default class App extends Component<Props> {
           transparent={true}
           animationType={'none'}
           visible={this.state.loading}
-          onRequestClose={() => {console.log('close modal')}}
+          onRequestClose={() => console.log('close modal')}
         >
           <View style={styles.loading}>
             <View style={styles.loadingWrapper}>
@@ -625,6 +627,33 @@ export default class App extends Component<Props> {
             </View>
           </View>
         </Modal>
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.modalAddVisible}
+          onRequestClose={() => this.setState({modalAddVisible: false})}
+        >
+          { this.state.modalAddType === 'categories' ?
+              <View>
+                <Text>Agregar categorias</Text>
+              </View>
+            :
+            this.state.modalAddType === 'products' ?
+              <View>
+                <Text>Agregar productos</Text>
+              </View>
+            :
+            this.state.modalAddType === 'sales' ?
+              <View>
+                <Text>Agregar ventas</Text>
+              </View>
+            :
+              <View>
+                <Text>Agregar pronósticos</Text>
+              </View>
+          }
+          <Text onPress={() => this.setState({modalAddVisible: false})}>HideModal</Text>
+        </Modal>        
         { this.renderView() }
       </View>
     )
