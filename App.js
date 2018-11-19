@@ -243,6 +243,46 @@ export default class App extends Component<Props> {
     )
   }
 
+  onPressDeleteIcon(table, id){
+    Alert.alert(
+      '',
+      '¿Desea eliminar el registro?',
+      [ {text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: 'Eliminar', onPress: () => {
+            this.setState({loading: true})
+            fetch(`${rootUrl}/${table}/delete/?id_category=${id}`)
+            .then(
+              (res) => { console.log('res --->', res); return res.json(); }
+            )
+            .then(
+              (json) => {
+                if (json.errors) {
+                  Alert.alert('', 'Ha ocurrido un error, intentelo de nuevo más tarde.')
+                }else{
+                  return fetch(`${rootUrl}/users/read/${this.state.user.id_user}/categories,products,sales,SalesProducts,forecasts`);
+                }
+              }
+            )
+            .then( (newRes) => { return newRes.json(); })
+            .then(
+              (newDataUser) => {
+                this.setState({user: newDataUser.data[0]})
+                this.setState({loading: false})
+                Alert.alert('', 'Registro eliminado con éxito.')
+              }
+            )
+          }
+        },
+      ],
+      { cancelable: false }
+    )
+    //alert(`delete: ${id}`)
+  }
+
+  onPressUpdateCategory(id){
+    alert(`update: ${id}`)
+  }
+
   renderView(){
     let render = []    
     switch (this.state.view) {
@@ -286,9 +326,9 @@ export default class App extends Component<Props> {
               />
             </View>
             <View style={{margin:7}} />
-            <TextInput keyboardType='email-address' style={styles.input} placeholder='Ingrese su nombre(s):' onChangeText={(text) => this.setState({register_names: text})} value={this.state.register_names} />
+            <TextInput style={styles.input} placeholder='Ingrese su nombre(s):' onChangeText={(text) => this.setState({register_names: text})} value={this.state.register_names} />
             <TextInput style={styles.input} placeholder='Ingrese su apellido(s):' onChangeText={(text) => this.setState({register_last_names: text})} value={this.state.register_last_names} />
-            <TextInput style={styles.input} placeholder='Ingrese su correo:' onChangeText={(text) => this.setState({register_user: text})} value={this.state.register_user} />
+            <TextInput keyboardType='email-address' style={styles.input} placeholder='Ingrese su correo:' onChangeText={(text) => this.setState({register_user: text})} value={this.state.register_user} />
             <TextInput secureTextEntry={true} style={styles.input} placeholder='Ingrese su contraseña:' onChangeText={(text) => this.setState({register_pass: text})} value={this.state.register_pass} />
             <View style={{margin:7}} />
             <Button onPress={() => this.onPressRegister()} title="Registrar" />
@@ -355,7 +395,7 @@ export default class App extends Component<Props> {
             <View style={{margin:14}} />
             <Button onPress={() => console.log('Nueva Categorias clicked...')} title='Nueva Categoria' />
             <View style={{margin:7}} />
-            { this.state.user.categories.length > 0 ?
+            { this.state.user.categories && this.state.user.categories.length > 0 ?
                 this.state.user.categories.map(
                   (category, c) => {
                     return(
@@ -364,10 +404,14 @@ export default class App extends Component<Props> {
                           <Text>{category.name}</Text>
                         </View>
                         <View style={{ marginLeft: 20 }} >
-                          <Image style={styles.imagesActions} source={UpdateImage} />
+                          <TouchableOpacity onPress={() => this.onPressUpdateCategory(category.id_category)}>
+                            <Image style={styles.imagesActions} source={UpdateImage} />
+                          </TouchableOpacity>
                         </View>
                         <View style={{ marginLeft: 20 }} >
-                          <Image style={styles.imagesActions} source={DeleteImage} />
+                          <TouchableOpacity onPress={() => this.onPressDeleteIcon('categories', category.id_category)}>
+                            <Image style={styles.imagesActions} source={DeleteImage} />
+                          </TouchableOpacity>
                         </View>
                       </View>
                     )
