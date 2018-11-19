@@ -18,7 +18,6 @@ import {
   Image,
   Alert,
   BackHandler,
-  ToolbarAndroid,
   Linking,
   AsyncStorage,
   TouchableOpacity,
@@ -145,26 +144,56 @@ export default class App extends Component<Props> {
       add_category_description: '',
     }
     this.onPressLogin = this.onPressLogin.bind(this)
-    this.onActionSelected = this.onActionSelected.bind(this)
   }
 
   componentDidMount(){
-    BackHandler.addEventListener('hardwareBackPress', () => {
+    BackHandler.addEventListener('hardwareBackPress', this.onBackPressed);
+
+    Linking.addEventListener('url', this._handleOpenURL);
+
+    setTimeout(() => this.setState({view: 'login'}), 3500)
+  }
+
+  onBackPressed = () => {
+    let { view } = this.state
+    switch (view) {
+      case 'register':
+        this.setState({view: 'login'});
+      break;
+      case 'menu':
         Alert.alert(
           '',
-          '¿Desea salir de la app?\nSe cerrará la sesión por defecto.',
+          '¿Desea cerrar sesión?',
+          [ {text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+            {text: 'Salir', onPress: () => this.setState({view: 'login'}) },
+          ],
+          { cancelable: false }
+        )
+      break;
+      case 'optionCategories':
+        this.setState({view: 'menu'});
+      break;
+      case 'optionProducts':
+        this.setState({view: 'menu'});
+      break;
+      case 'optionSales':
+        this.setState({view: 'menu'});
+      break;
+      case 'optionForecast':
+        this.setState({view: 'menu'});
+      break;
+      case 'login':
+        Alert.alert(
+          '',
+          '¿Desea salir de la app?',
           [ {text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
             {text: 'Salir', onPress: () => BackHandler.exitApp() },
           ],
           { cancelable: false }
         )
-        return true;
-      }
-    );
-
-    Linking.addEventListener('url', this._handleOpenURL);
-
-    setTimeout(() => this.setState({view: 'login'}), 3500)
+      break;
+    }
+    return true;
   }
 
   componentWillUnmount() {
@@ -607,46 +636,11 @@ export default class App extends Component<Props> {
     }
   }
 
-  onActionSelected(position) {
-    let { view } = this.state
-    if (position === 0) { // index of 'Settings'
-      switch (view) {
-        case 'register':
-          this.setState({view: 'login'});
-        break;
-        case 'menu':
-          this.setState({view: 'login'});
-        break;
-        case 'optionCategories':
-          this.setState({view: 'menu'});
-        break;
-        case 'optionProducts':
-          this.setState({view: 'menu'});
-        break;
-        case 'optionSales':
-          this.setState({view: 'menu'});
-        break;
-        case 'optionForecast':
-          this.setState({view: 'menu'});
-        break;
-      }
-    }
-  }
-
   render() {
+    console.log('this.state ---->', this.state)
     console.log('this.state.user ---->', this.state.user)
     return(
       <View style={styles.containerFlex}>
-        { this.state.view !== 'default' &&
-          <ToolbarAndroid
-            logo={SplashLogo}
-            overflowIcon={SplashLogo}
-            title="SmartSaleApp"
-            actions={[{title: 'BACK', show: 'always'}]}
-            onActionSelected={this.onActionSelected} 
-            style={styles.toolbar}
-          />
-        }
         <Modal
           transparent={true}
           animationType={'none'}
