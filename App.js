@@ -453,9 +453,9 @@ export default class App extends Component<Props> {
             <View style={{margin:7}} />
             { this.state.user.products && this.state.user.products.length > 0 ?
                 this.state.user.products.map(
-                  (product, c) => {
+                  (product, p) => {
                     return(
-                      <View style={styles.card} key={c}>
+                      <View style={styles.card} key={p}>
                         <View style={{ flex: 5, alignSelf: 'stretch', padding: 5 }} >
                           <Text>{product.name}</Text>
                         </View>
@@ -497,6 +497,33 @@ export default class App extends Component<Props> {
             <View style={{margin:7}} />
             <Button onPress={() => console.log('Nueva Venta clicked...')} title='Nueva Venta' />
             <View style={{margin:7}} />
+            { this.state.user.sales && this.state.user.sales.length > 0 ?
+                this.state.user.sales.map(
+                  (sale, s) => {
+                    return(
+                      <View style={styles.card} key={s}>
+                        <View style={{ flex: 5, alignSelf: 'stretch', padding: 5 }} >
+                          <Text>{`Venta: #${sale.id_sale}\nFecha: ${sale.date_sale}`}</Text>
+                        </View>
+                        <View style={styles.containerFlex} >
+                          <TouchableOpacity onPress={() => this.onPressUpdateCategory(sale.id_sale)}>
+                            <Image style={styles.imagesActions} source={UpdateImage} />
+                          </TouchableOpacity>
+                        </View>
+                        <View style={styles.containerFlex} >
+                          <TouchableOpacity onPress={() => this.onPressDeleteIcon('sales', 'id_sale', sale.id_sale)}>
+                            <Image style={styles.imagesActions} source={DeleteImage} />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    )
+                  }
+                )
+              :
+              <View style={styles.card}>
+                <Text>No hay productos disponibles.</Text>
+              </View>
+            }
           </ScrollView>
         )
       break;
@@ -516,6 +543,33 @@ export default class App extends Component<Props> {
             <View style={{margin:7}} />
             <Button onPress={() => console.log('Nuevo Pronostico clicked...')} title='Nuevo Pronóstico' />
             <View style={{margin:7}} />
+            { this.state.user.forecasts && this.state.user.forecasts.length > 0 ?
+                this.state.user.forecasts.map(
+                  (forecast, f) => {
+                    return(
+                      <View style={styles.card} key={f}>
+                        <View style={{ flex: 5, alignSelf: 'stretch', padding: 5 }} >
+                          <Text>{`ID: #${forecast.id_forecast}\nVenta: ${forecast.sale_id}`}</Text>
+                        </View>
+                        <View style={styles.containerFlex} >
+                          <TouchableOpacity onPress={() => this.onPressUpdateCategory(forecast.id_forecast)}>
+                            <Image style={styles.imagesActions} source={UpdateImage} />
+                          </TouchableOpacity>
+                        </View>
+                        <View style={styles.containerFlex} >
+                          <TouchableOpacity onPress={() => this.onPressDeleteIcon('forecast', 'id_forecast', forecast.id_forecast)}>
+                            <Image style={styles.imagesActions} source={DeleteImage} />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    )
+                  }
+                )
+              :
+              <View style={styles.card}>
+                <Text>No hay pronósticos disponibles.</Text>
+              </View>
+            }
           </ScrollView>
         )
       break;
