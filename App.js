@@ -394,6 +394,7 @@ export default class App extends Component<Props> {
             <View style={styles.containerFlex}>
               <Text style={styles.link} onPress={() => this.setState({view: 'login'})}>¿Ya tienes cuenta? ¡Ingresa!</Text>
             </View>
+            <View style={{margin:14}} />
           </ScrollView>
         )
       break;
