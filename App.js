@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
   },
   containerWithoutFlex: {
-    width: DEVICE_WIDTH - 100,
+    width: DEVICE_WIDTH - 75,
     backgroundColor: '#F5FCFF',
   },
   toolbar: {
@@ -65,12 +65,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around'
   },
   input: {
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-    width: DEVICE_WIDTH - 40,
+    width: DEVICE_WIDTH - 75,
     height: 40,
     paddingRight: 20,
     paddingLeft: 20,
     borderRadius: 20,
+    borderColor: 'black',
+    borderWidth: 1,
+    marginBottom: 10
   },
   link: {
     color: 'blue',
@@ -86,8 +88,8 @@ const styles = StyleSheet.create({
     height: DEVICE_WIDTH - 60
   },
   imagesActions: {
-    width: DEVICE_WIDTH - 303,
-    height: DEVICE_WIDTH - 300
+    width: 20,
+    height: 20
   },
   logoSmall: {
     width: DEVICE_WIDTH - 152,
@@ -408,15 +410,15 @@ export default class App extends Component<Props> {
                   (category, c) => {
                     return(
                       <View style={styles.card} key={c}>
-                        <View style={{ flex: 2, alignSelf: 'stretch' }} >
+                        <View style={{ flex: 5, alignSelf: 'stretch' }} >
                           <Text>{category.name}</Text>
                         </View>
-                        <View style={{ marginLeft: 20 }} >
+                        <View style={{ flex: 1 }} >
                           <TouchableOpacity onPress={() => this.onPressUpdateCategory(category.id_category)}>
                             <Image style={styles.imagesActions} source={UpdateImage} />
                           </TouchableOpacity>
                         </View>
-                        <View style={{ marginLeft: 20 }} >
+                        <View style={{ flex: 1 }} >
                           <TouchableOpacity onPress={() => this.onPressDeleteIcon('categories', category.id_category)}>
                             <Image style={styles.imagesActions} source={DeleteImage} />
                           </TouchableOpacity>
