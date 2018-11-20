@@ -348,11 +348,13 @@ export default class App extends Component<Props> {
       add_category_description
     } = this.state
     let dataUrl = ''
+
     switch (table) {
       case 'categories':
         dataUrl = `?user_id=${user.id_user}&name=${add_category_name}&description=${add_category_description}`
       break;
     }
+    
     this.setState({loading: true})
     fetch(`${rootUrl}/${table}/create/${dataUrl}`)
     .then((res) => { return res.json() })
@@ -378,8 +380,15 @@ export default class App extends Component<Props> {
           }
         }else{
           console.log('json data --->', json.data)
-          user.categories.push(json.data)
+          
+          user[`${table}`].push(json.data)
           this.setState({ user })
+
+          this.setState({
+            add_category_name: '',
+            add_category_description: ''
+          })
+          
           Alert.alert('', 'Categoria agregada.')
           this.setState({loading: false})
           this.setState({modalAddVisible: false})
