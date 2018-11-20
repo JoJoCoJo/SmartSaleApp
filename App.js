@@ -339,6 +339,53 @@ export default class App extends Component<Props> {
     alert(`update: ${id}`)
   }
 
+  onPressAddButton(table) {
+    let {
+      user,
+      add_category_name,
+      add_category_description
+    } = this.state
+    let dataUrl = ''
+    switch (table) {
+      case 'categories':
+        dataUrl = `?user_id=${user.id_user}&name=${add_category_name}&description=${add_category_description}`
+      break;
+    }
+    this.setState({loading: true})
+    fetch(`${rootUrl}/${table}/create/${dataUrl}`)
+    .then((res) => { return res.json() })
+    .then(
+      (json) => {
+        console.log('json ---->', json)
+        let errors = ''
+        if (json.errors) {
+          if (json.errors.name) {
+            if (json.errors.name.length > 0) {
+              errors += `${json.errors.name[0]}\n`
+            }
+          }
+          if (json.errors.description) {
+            if (json.errors.description.length > 0) {
+              errors += `${json.errors.description[0]}\n`
+            }
+          }
+
+          if (errors !== '') {
+            this.setState({loading: false})
+            Alert.alert('', errors)
+          }
+        }else{
+          console.log('json data --->', json.data)
+          user.categories.push(json.data)
+          this.setState({ user })
+          Alert.alert('', 'Categoria agregada.')
+          this.setState({loading: false})
+          this.setState({modalAddVisible: false})
+        }
+      }
+    )
+  }
+
   renderView(){
     let render = []    
     switch (this.state.view) {
@@ -483,6 +530,7 @@ export default class App extends Component<Props> {
                 <Text>No hay categorias disponibles.</Text>
               </View>
             }
+            <View style={{margin:14}} />
           </ScrollView>
         )
       break;
@@ -658,7 +706,7 @@ export default class App extends Component<Props> {
           </View>
         </Modal>
         <Modal
-          animationType="slide"
+          animationType="fade"
           transparent={false}
           visible={this.state.modalAddVisible}
           onRequestClose={() => this.setState({modalAddVisible: false})}
@@ -674,9 +722,7 @@ export default class App extends Component<Props> {
                 <View style={{margin:14}} />
                 <TextInput style={styles.input} placeholder='Nombre de la categoria:' onChangeText={(text) => this.setState({add_category_name: text})} value={this.state.add_category_name} />
                 <TextInput style={styles.textArea} multiline={true} numberOfLines={10} placeholder='Descripción de la categoria: (Opcional)' onChangeText={(text) => this.setState({add_category_description: text})} value={this.state.add_category_description} />
-                {/*<TextInput keyboardType='email-address' style={styles.input} placeholder='Ingrese su correo:' onChangeText={(text) => this.setState({register_user: text})} value={this.state.register_user} />
-                                <TextInput keyboardType='email-address' style={styles.input} placeholder='Ingrese su correo:' onChangeText={(text) => this.setState({register_user: text})} value={this.state.register_user} />*/}
-                <Button onPress={() => this.setState({modalAddVisible: false})} title='Guardar' />
+                <Button onPress={() => this.onPressAddButton('categories')} title='Guardar' />
                 <View style={{margin:7}} />
               </ScrollView>
             :
