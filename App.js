@@ -144,6 +144,8 @@ export default class App extends Component<Props> {
       add_category_name: '',
       add_category_description: '',
       add_product_category_id: '',
+      add_product_name: '',
+      add_product_price: '',
     }
     this.onPressLogin = this.onPressLogin.bind(this)
   }
@@ -345,7 +347,10 @@ export default class App extends Component<Props> {
     let {
       user,
       add_category_name,
-      add_category_description
+      add_category_description,
+      add_product_category_id,
+      add_product_name,
+      add_product_price,
     } = this.state
     let dataUrl = ''
 
@@ -353,8 +358,11 @@ export default class App extends Component<Props> {
       case 'categories':
         dataUrl = `?user_id=${user.id_user}&name=${add_category_name}&description=${add_category_description}`
       break;
+      case 'products':
+        dataUrl = `?user_id=${user.id_user}&category_id=${add_product_category_id}&name=${add_product_name}&price=${add_product_price}`
+      break;
     }
-    
+    console.log('dataUrl --->', dataUrl)
     this.setState({loading: true})
     fetch(`${rootUrl}/${table}/create/${dataUrl}`)
     .then((res) => { return res.json() })
@@ -373,6 +381,11 @@ export default class App extends Component<Props> {
               errors += `${json.errors.description[0]}\n`
             }
           }
+          if (json.errors.price) {
+            if (json.errors.price.length > 0) {
+              errors += `${json.errors.price[0]}\n`
+            }
+          }
 
           if (errors !== '') {
             this.setState({loading: false})
@@ -386,10 +399,13 @@ export default class App extends Component<Props> {
 
           this.setState({
             add_category_name: '',
-            add_category_description: ''
+            add_category_description: '',
+            add_product_category_id: '',
+            add_product_name: '',
+            add_product_price: '',
           })
           
-          Alert.alert('', 'Categoria agregada.')
+          Alert.alert('', 'Registro agregado.')
           this.setState({loading: false})
           this.setState({modalAddVisible: false})
         }
@@ -750,6 +766,7 @@ export default class App extends Component<Props> {
                   <Picker
                     selectedValue={this.state.add_product_category_id}
                     style={styles.input}
+                    mode='dropdown'
                     onValueChange={(itemValue) => this.setState({add_product_category_id: itemValue})}
                   >
                     <Picker.Item label='Sin Categoria' value='' />
@@ -763,10 +780,10 @@ export default class App extends Component<Props> {
                   :
                   <Text>No hay categorias disponibles. Puede ingresar nuevas en el apartado de categorias.</Text>
                 }
-                
-                {/*<TextInput style={styles.input} placeholder='Nombre de la categoria:' onChangeText={(text) => this.setState({add_category_name: text})} value={this.state.add_category_name} />
-                                <TextInput style={styles.textArea} multiline={true} numberOfLines={10} placeholder='Descripción de la categoria: (Opcional)' onChangeText={(text) => this.setState({add_category_description: text})} value={this.state.add_category_description} />*/}
-                {/*<Button onPress={() => this.onPressAddButton('categories')} title='Guardar' />*/}
+                <TextInput style={styles.input} placeholder='Nombre del producto:' onChangeText={(text) => this.setState({add_product_name: text})} value={this.state.add_product_name} />
+                <TextInput style={styles.input} keyboardType='decimal-pad' placeholder='Precio del producto:' onChangeText={(text) => this.setState({add_product_price: text})} value={this.state.add_product_price} />
+                <View style={{margin:7}} />
+                <Button onPress={() => this.onPressAddButton('products')} title='Guardar' />
                 <View style={{margin:7}} />
               </ScrollView>
             :
