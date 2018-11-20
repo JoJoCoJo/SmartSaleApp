@@ -11,6 +11,7 @@ import {
   Text,
   Button,
   TextInput,
+  Picker,
   View,
   ScrollView,
   StyleSheet,
@@ -142,6 +143,7 @@ export default class App extends Component<Props> {
       register_last_names: '',
       add_category_name: '',
       add_category_description: '',
+      add_product_category_id: '',
     }
     this.onPressLogin = this.onPressLogin.bind(this)
   }
@@ -727,9 +729,37 @@ export default class App extends Component<Props> {
               </ScrollView>
             :
             this.state.modalAddType === 'products' ?
-              <View>
-                <Text>Agregar productos</Text>
-              </View>
+              <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
+                <View style={styles.containerFlex}>
+                  <View style={{margin:7}} />
+                  <Text style={{fontSize: 27}}>
+                    Nuevo Producto
+                  </Text>
+                </View>
+                <View style={{margin:14}} />
+                { this.state.user.categories && this.state.user.categories.length > 0 ?
+                  <Picker
+                    selectedValue={this.state.add_product_category_id}
+                    style={styles.input}
+                    onValueChange={(itemValue) => this.setState({add_product_category_id: itemValue})}
+                  >
+                    <Picker.Item label='Sin Categoria' value='' />
+                    { this.state.user.categories.map(
+                        (categoriesUser, cu) => {
+                          return(<Picker.Item label={categoriesUser.name} value={categoriesUser.id_category} key={cu} />)
+                        }
+                      )
+                    }
+                  </Picker>
+                  :
+                  <Text>No hay categorias disponibles. Puede ingresar nuevas en el apartado de categorias.</Text>
+                }
+                
+                {/*<TextInput style={styles.input} placeholder='Nombre de la categoria:' onChangeText={(text) => this.setState({add_category_name: text})} value={this.state.add_category_name} />
+                                <TextInput style={styles.textArea} multiline={true} numberOfLines={10} placeholder='Descripción de la categoria: (Opcional)' onChangeText={(text) => this.setState({add_category_description: text})} value={this.state.add_category_description} />*/}
+                {/*<Button onPress={() => this.onPressAddButton('categories')} title='Guardar' />*/}
+                <View style={{margin:7}} />
+              </ScrollView>
             :
             this.state.modalAddType === 'sales' ?
               <View>
