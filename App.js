@@ -539,7 +539,7 @@ export default class App extends Component<Props> {
                     return(
                       <View style={styles.card} key={c}>
                         <View style={{ flex: 5, alignSelf: 'stretch', padding: 5 }} >
-                          <Text>{category.name}</Text>
+                          <Text style={styles.link} onPress={() => Alert.alert(category.name, `${category.description === null ? `No hay descripción disponible.` : `Descripción: ${category.description}`}`)}>{category.name}</Text>
                         </View>
                         <View style={styles.containerFlex} >
                           <TouchableOpacity onPress={() => this.onPressDeleteIcon('categories', 'id_category', category.id_category)}>
@@ -582,7 +582,7 @@ export default class App extends Component<Props> {
                     return(
                       <View style={styles.card} key={p}>
                         <View style={{ flex: 5, alignSelf: 'stretch', padding: 5 }} >
-                          <Text>{product.name}</Text>
+                          <Text style={styles.link} onPress={() => Alert.alert(product.name, product.category_id === null ? `Categoría: No hay categoría disponible.\nPrecio: ${product.price}` : `Categoría Id: ${product.category_id}\nPrecio: ${product.price}`)}>{product.name}</Text>
                         </View>
                         <View style={styles.containerFlex} >
                           <TouchableOpacity onPress={() => this.onPressDeleteIcon('products', 'id_product', product.id_product)}>
@@ -671,7 +671,7 @@ export default class App extends Component<Props> {
                     return(
                       <View style={styles.card} key={f}>
                         <View style={{ flex: 5, alignSelf: 'stretch', padding: 5 }} >
-                          <Text>{`ID: #${forecast.id_forecast}\nVenta: ${forecast.sale_id}`}</Text>
+                          <Text style={styles.link} onPress={() => Alert.alert('', `Info pronóstico: ${forecast.id_forecast}`)}>{`ID: #${forecast.id_forecast}\nVenta: ${forecast.sale_id}`}</Text>
                         </View>
                         <View style={styles.containerFlex} >
                           <TouchableOpacity onPress={() => Alert.alert('', `Generar datos del pronóstico: ${forecast.id_forecast}`)}>
