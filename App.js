@@ -541,11 +541,6 @@ export default class App extends Component<Props> {
                         <View style={{ flex: 5, alignSelf: 'stretch', padding: 5 }} >
                           <Text>{category.name}</Text>
                         </View>
-                        {/*<View style={styles.containerFlex} >
-                                                  <TouchableOpacity onPress={() => this.onPressUpdateCategory(category.id_category)}>
-                                                    <Image style={styles.imagesActions} source={UpdateIcon} />
-                                                  </TouchableOpacity>
-                                                </View>*/}
                         <View style={styles.containerFlex} >
                           <TouchableOpacity onPress={() => this.onPressDeleteIcon('categories', 'id_category', category.id_category)}>
                             <Image style={styles.imagesActions} source={DeleteIcon} />
@@ -589,11 +584,6 @@ export default class App extends Component<Props> {
                         <View style={{ flex: 5, alignSelf: 'stretch', padding: 5 }} >
                           <Text>{product.name}</Text>
                         </View>
-                        {/*<View style={styles.containerFlex} >
-                                                  <TouchableOpacity onPress={() => this.onPressUpdateCategory(product.id_product)}>
-                                                    <Image style={styles.imagesActions} source={UpdateIcon} />
-                                                  </TouchableOpacity>
-                                                </View>*/}
                         <View style={styles.containerFlex} >
                           <TouchableOpacity onPress={() => this.onPressDeleteIcon('products', 'id_product', product.id_product)}>
                             <Image style={styles.imagesActions} source={DeleteIcon} />
