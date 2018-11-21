@@ -26,8 +26,11 @@ import {
 } from 'react-native';
 import Dimensions from 'Dimensions';
 import SplashLogo from './assets/splash.png';
-import DeleteImage from './assets/delete.png';
-import UpdateImage from './assets/update.png';
+import DeleteIcon from './assets/delete.png';
+import UpdateIcon from './assets/update.png';
+import AddIcon from './assets/add.png';
+import GraphsIcon from './assets/graphs.png';
+import DataIcon from './assets/data.png';
 
 const rootUrl = 'http://smart-sale.000webhostapp.com/api/v1'
 const DEVICE_WIDTH = Dimensions.get('window').width;
@@ -538,14 +541,14 @@ export default class App extends Component<Props> {
                         <View style={{ flex: 5, alignSelf: 'stretch', padding: 5 }} >
                           <Text>{category.name}</Text>
                         </View>
-                        <View style={styles.containerFlex} >
-                          <TouchableOpacity onPress={() => this.onPressUpdateCategory(category.id_category)}>
-                            <Image style={styles.imagesActions} source={UpdateImage} />
-                          </TouchableOpacity>
-                        </View>
+                        {/*<View style={styles.containerFlex} >
+                                                  <TouchableOpacity onPress={() => this.onPressUpdateCategory(category.id_category)}>
+                                                    <Image style={styles.imagesActions} source={UpdateIcon} />
+                                                  </TouchableOpacity>
+                                                </View>*/}
                         <View style={styles.containerFlex} >
                           <TouchableOpacity onPress={() => this.onPressDeleteIcon('categories', 'id_category', category.id_category)}>
-                            <Image style={styles.imagesActions} source={DeleteImage} />
+                            <Image style={styles.imagesActions} source={DeleteIcon} />
                           </TouchableOpacity>
                         </View>
                       </View>
@@ -586,14 +589,14 @@ export default class App extends Component<Props> {
                         <View style={{ flex: 5, alignSelf: 'stretch', padding: 5 }} >
                           <Text>{product.name}</Text>
                         </View>
-                        <View style={styles.containerFlex} >
-                          <TouchableOpacity onPress={() => this.onPressUpdateCategory(product.id_product)}>
-                            <Image style={styles.imagesActions} source={UpdateImage} />
-                          </TouchableOpacity>
-                        </View>
+                        {/*<View style={styles.containerFlex} >
+                                                  <TouchableOpacity onPress={() => this.onPressUpdateCategory(product.id_product)}>
+                                                    <Image style={styles.imagesActions} source={UpdateIcon} />
+                                                  </TouchableOpacity>
+                                                </View>*/}
                         <View style={styles.containerFlex} >
                           <TouchableOpacity onPress={() => this.onPressDeleteIcon('products', 'id_product', product.id_product)}>
-                            <Image style={styles.imagesActions} source={DeleteImage} />
+                            <Image style={styles.imagesActions} source={DeleteIcon} />
                           </TouchableOpacity>
                         </View>
                       </View>
@@ -631,16 +634,16 @@ export default class App extends Component<Props> {
                     return(
                       <View style={styles.card} key={s}>
                         <View style={{ flex: 5, alignSelf: 'stretch', padding: 5 }} >
-                          <Text>{`Venta: #${sale.id_sale}\nFecha: ${sale.date_sale}`}</Text>
+                          <Text style={styles.link} onPress={() => Alert.alert('', `Ver info de la venta: ${sale.id_sale}`) } >{`Venta: #${sale.id_sale}\nFecha: ${sale.date_sale}`}</Text>
                         </View>
                         <View style={styles.containerFlex} >
-                          <TouchableOpacity onPress={() => this.onPressUpdateCategory(sale.id_sale)}>
-                            <Image style={styles.imagesActions} source={UpdateImage} />
+                          <TouchableOpacity onPress={() => Alert.alert('', `Agregar/Ver Productos a las venta: ${sale.id_sale}`)}>
+                            <Image style={styles.imagesActions} source={AddIcon} />
                           </TouchableOpacity>
                         </View>
                         <View style={styles.containerFlex} >
                           <TouchableOpacity onPress={() => this.onPressDeleteIcon('sales', 'id_sale', sale.id_sale)}>
-                            <Image style={styles.imagesActions} source={DeleteImage} />
+                            <Image style={styles.imagesActions} source={DeleteIcon} />
                           </TouchableOpacity>
                         </View>
                       </View>
@@ -681,13 +684,18 @@ export default class App extends Component<Props> {
                           <Text>{`ID: #${forecast.id_forecast}\nVenta: ${forecast.sale_id}`}</Text>
                         </View>
                         <View style={styles.containerFlex} >
-                          <TouchableOpacity onPress={() => this.onPressUpdateCategory(forecast.id_forecast)}>
-                            <Image style={styles.imagesActions} source={UpdateImage} />
+                          <TouchableOpacity onPress={() => Alert.alert('', `Generar datos del pronóstico: ${forecast.id_forecast}`)}>
+                            <Image style={styles.imagesActions} source={DataIcon} />
+                          </TouchableOpacity>
+                        </View>
+                        <View style={styles.containerFlex} >
+                          <TouchableOpacity onPress={() => Alert.alert('', `Generar gráfica del pronóstico: ${forecast.id_forecast}`)}>
+                            <Image style={styles.imagesActions} source={GraphsIcon} />
                           </TouchableOpacity>
                         </View>
                         <View style={styles.containerFlex} >
                           <TouchableOpacity onPress={() => this.onPressDeleteIcon('forecast', 'id_forecast', forecast.id_forecast)}>
-                            <Image style={styles.imagesActions} source={DeleteImage} />
+                            <Image style={styles.imagesActions} source={DeleteIcon} />
                           </TouchableOpacity>
                         </View>
                       </View>
