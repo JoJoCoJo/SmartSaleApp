@@ -12,6 +12,7 @@ import {
   Button,
   TextInput,
   Picker,
+  DatePickerAndroid,
   View,
   ScrollView,
   StyleSheet,
@@ -72,6 +73,14 @@ const styles = StyleSheet.create({
     height: 40,
     paddingRight: 20,
     paddingLeft: 20,
+    borderRadius: 20,
+    borderColor: 'black',
+    borderWidth: 1,
+    marginBottom: 10
+  },
+  inputFlex: {
+    flex: 1,
+    height: 40,
     borderRadius: 20,
     borderColor: 'black',
     borderWidth: 1,
@@ -149,6 +158,10 @@ export default class App extends Component<Props> {
       add_product_category_id: '',
       add_product_name: '',
       add_product_price: '',
+      add_sales_category_id: 0,
+      add_sales_date_sale: new Date().toLocaleDateString(),
+      add_sales_type_sale: 0,
+      add_sales_show_total_units_sales: 1,
     }
     this.onPressLogin = this.onPressLogin.bind(this)
   }
@@ -213,6 +226,21 @@ export default class App extends Component<Props> {
 
   _handleOpenURL(url) {
     Linking.openURL(url).catch(err => console.error('An error occurred', err));
+  }
+
+  async openAndroidDatePicker(stateNewDate) {
+    try {
+      const {action, year, month, day} = await DatePickerAndroid.open({
+        date: new Date()
+      });
+
+      if (action === DatePickerAndroid.dateSetAction) {
+        let newDate = new Date(year, month, day);
+        this.setState({ [stateNewDate]: newDate.toLocaleDateString() })
+      }
+    } catch ({code, message}) {
+      console.warn('Cannot open date picker', message);
+    }
   }
 
   onPressLogin(){
@@ -786,9 +814,70 @@ export default class App extends Component<Props> {
               </ScrollView>
             :
             this.state.modalAddType === 'sales' ?
-              <View>
-                <Text>Agregar ventas</Text>
-              </View>
+              <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
+                <View style={styles.containerFlex}>
+                  <View style={{margin:7}} />
+                  <Text style={{fontSize: 27}}>
+                    Nueva Venta
+                  </Text>
+                </View>
+                <View style={{margin:14}} />
+                { this.state.user.categories && this.state.user.categories.length > 0 ?
+                  <Picker
+                    selectedValue={this.state.add_sales_category_id}
+                    style={styles.input}
+                    mode='dropdown'
+                    onValueChange={(itemValue) => this.setState({add_sales_category_id: itemValue})}
+                  >
+                    <Picker.Item label='Sin Categoria' value={0} />
+                    { this.state.user.categories.map(
+                        (categoriesUser, cu) => {
+                          return(<Picker.Item label={categoriesUser.name} value={categoriesUser.id_category} key={cu} />)
+                        }
+                      )
+                    }
+                  </Picker>
+                  :
+                  <Text>No hay categorias disponibles. Puede ingresar nuevas en el apartado de categorias.</Text>
+                }
+                <TouchableOpacity onPress={() => this.openAndroidDatePicker('add_sales_date_sale')}>
+                  <TextInput editable={false} style={styles.input} placeholder='Fecha de la venta:' onChangeText={(text) => this.setState({add_sales_date_sale: text})} value={this.state.add_sales_date_sale} />
+                </TouchableOpacity>
+                <Picker
+                  selectedValue={this.state.add_sales_type_sale}
+                  style={styles.input}
+                  mode='dropdown'
+                  onValueChange={(itemValue) => this.setState({add_sales_type_sale: itemValue})}
+                >
+                  <Picker.Item label='Selecione un tipo de venta' value={0} />
+                  <Picker.Item label='Tipo de venta 1' value={1} />
+                  <Picker.Item label='Tipo de venta 2' value={2} />
+                  <Picker.Item label='Tipo de venta 3' value={3} />
+                </Picker>
+                <View style={{ flex: 5, alignSelf: 'stretch', flexDirection: 'row'}} >
+                  <View style={styles.containerFlex} />
+                  <View style={styles.containerFlex}>
+                    <Button onPress={
+                      () => {
+                        if (this.state.add_sales_show_total_units_sales > 1) {
+                          this.setState({add_sales_show_total_units_sales: Number(this.state.add_sales_show_total_units_sales) - 1 })
+                        }
+                      }
+                    } title='-' />
+                  </View>
+                  <View style={styles.containerFlex}>
+                    <TextInput editable={false} style={styles.inputFlex} onChangeText={(text) => this.setState({add_sales_show_total_units_sales: text})} value={String(this.state.add_sales_show_total_units_sales)} />
+                  </View>
+                  <View style={styles.containerFlex}>
+                    <Button onPress={() => this.setState({add_sales_show_total_units_sales: Number(this.state.add_sales_show_total_units_sales) + 1 }) } title='+' />
+                  </View>
+                  <View style={styles.containerFlex} />
+                </View>
+                {/*<TextInput style={styles.input} keyboardType='numeric' placeholder='Cantidad vendidos:' onChangeText={(text) => this.setState({add_sales_date_sale: text})} value={this.state.add_sales_date_sale} />*/}
+                <View style={{margin:7}} />
+                {/*<Button onPress={() => this.onPressAddButton('products')} title='Guardar' />*/}
+                <View style={{margin:7}} />
+              </ScrollView>
             :
               <View>
                 <Text>Agregar pronósticos</Text>
