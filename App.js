@@ -751,6 +751,9 @@ export default class App extends Component<Props> {
     for (let i = 1; i < (Number(this.state.add_sales_show_total_units_sales) + 1); i++) {
       render.push(
         <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row'}} key={i}>
+          <View style={{ justifyContent: 'center'}}>
+            <Text>{`${i}.-`}</Text>
+          </View>
           <View style={{ flex: 1, alignSelf: 'stretch'}}>
             { this.state.user.products && this.state.user.products.length > 0 ?
               <Picker
@@ -780,9 +783,9 @@ export default class App extends Component<Props> {
             <View style={styles.containerFlex}>
               <Button onPress={
                 () => {
-                  if (Number(this.state.add_sales_products_id[`value${i}`]) > 1) {
+                  if (Number(this.state.add_sales_products_id[`quantity_sale${i}`]) > 1) {
                     let { add_sales_products_id } = this.state
-                    add_sales_products_id[`value${i}`] = Number(this.state.add_sales_products_id[`value${i}`] != undefined ? this.state.add_sales_products_id[`value${i}`] : 1 ) - 1
+                    add_sales_products_id[`quantity_sale${i}`] = Number(this.state.add_sales_products_id[`quantity_sale${i}`] != undefined ? this.state.add_sales_products_id[`quantity_sale${i}`] : 1 ) - 1
                     this.setState({
                       add_sales_products_id
                     })
@@ -797,13 +800,13 @@ export default class App extends Component<Props> {
                 onChangeText={
                   (text) => {
                     let { add_sales_products_id } = this.state
-                    add_sales_products_id[`value${i}`] = text
+                    add_sales_products_id[`quantity_sale${i}`] = text
                     this.setState({ add_sales_products_id })
                   }
                 }
                 value={
-                  this.state.add_sales_products_id[`value${i}`] != undefined ? 
-                  String(this.state.add_sales_products_id[`value${i}`]) 
+                  this.state.add_sales_products_id[`quantity_sale${i}`] != undefined ? 
+                  String(this.state.add_sales_products_id[`quantity_sale${i}`]) 
                   : 
                   '1'
                 } />
@@ -812,7 +815,7 @@ export default class App extends Component<Props> {
               <Button onPress={
                 () => {
                   let { add_sales_products_id } = this.state
-                  add_sales_products_id[`value${i}`] = Number(this.state.add_sales_products_id[`value${i}`] != undefined ? this.state.add_sales_products_id[`value${i}`] : 1 ) + 1
+                  add_sales_products_id[`quantity_sale${i}`] = Number(this.state.add_sales_products_id[`quantity_sale${i}`] != undefined ? this.state.add_sales_products_id[`quantity_sale${i}`] : 1 ) + 1
                   this.setState({ add_sales_products_id })
                 }
               } title='+' />
@@ -944,6 +947,9 @@ export default class App extends Component<Props> {
                   <Picker.Item label='Tipo de venta 2' value={2} />
                   <Picker.Item label='Tipo de venta 3' value={3} />
                 </Picker>
+                <View style={styles.containerFlex}>
+                  <Text>Registre los productos:</Text>
+                </View>
                 <View style={{ flex: 5, alignSelf: 'stretch', flexDirection: 'row'}} >
                   <View style={styles.containerFlex} />
                   <View style={styles.containerFlex}>
