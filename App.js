@@ -162,6 +162,9 @@ export default class App extends Component<Props> {
       add_sales_date_sale: new Date().toLocaleDateString(),
       add_sales_type_sale: 0,
       add_sales_show_total_units_sales: 1,
+      add_sales_products_id: {
+        product0: ''
+      }
     }
     this.onPressLogin = this.onPressLogin.bind(this)
   }
@@ -741,6 +744,61 @@ export default class App extends Component<Props> {
     }
   }
 
+  renderAddProductsInSales(){
+    let render = []
+
+    for (let i = 1; i < (Number(this.state.add_sales_show_total_units_sales) + 1); i++) {
+      render.push(
+        <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row'}} key={i}>
+          <View style={styles.containerFlex}>
+            { this.state.user.products && this.state.user.products.length > 0 ?
+              <Picker
+                selectedValue={this.state.add_sales_products_id[`product${i}`]}
+                style={styles.input}
+                mode='dropdown'
+                onValueChange={(itemValue) => {
+                  let { add_sales_products_id } = this.state
+                  add_sales_products_id[`product${i}`] = itemValue 
+                  this.setState({ add_sales_products_id }) 
+                  }
+                }
+              >
+                <Picker.Item label='Seleccione un producto' value={0} />
+                { this.state.user.products.map(
+                    (product, p) => {
+                      return(<Picker.Item label={product.name} value={product.id_product} key={p} />)
+                    }
+                  )
+                }
+              </Picker>
+              :
+              <Text>No hay categorias disponibles. Puede ingresar nuevas en el apartado de categorias.</Text>
+            }
+          </View>
+          <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row'}} >
+            <View style={styles.containerFlex}>
+              <Button onPress={
+                () => {
+                  if (this.state.add_sales_show_total_units_sales > 1) {
+                    this.setState({add_sales_show_total_units_sales: Number(this.state.add_sales_show_total_units_sales) - 1 })
+                  }
+                }
+              } title='-' />
+            </View>
+            <View style={styles.containerFlex}>
+              <TextInput editable={false} style={styles.inputFlex} onChangeText={(text) => this.setState({add_sales_show_total_units_sales: text})} value={String(this.state.add_sales_show_total_units_sales)} />
+            </View>
+            <View style={styles.containerFlex}>
+              <Button onPress={() => this.setState({add_sales_show_total_units_sales: Number(this.state.add_sales_show_total_units_sales) + 1 }) } title='+' />
+            </View>
+          </View>
+        </View>
+      )
+    }
+
+    return <View style={styles.containerFlex}>{render}</View>
+  }
+
   render() {
     console.log('this.state ---->', this.state)
     console.log('this.state.user ---->', this.state.user)
@@ -762,7 +820,12 @@ export default class App extends Component<Props> {
           animationType="fade"
           transparent={false}
           visible={this.state.modalAddVisible}
-          onRequestClose={() => this.setState({modalAddVisible: false})}
+          onRequestClose={
+            () => {
+              this.setState({ add_sales_show_total_units_sales: 1, add_sales_products_id: {} })
+              this.setState({ modalAddVisible: false })
+            }
+          }
         >
           { this.state.modalAddType === 'categories' ?
               <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
@@ -873,6 +936,7 @@ export default class App extends Component<Props> {
                   </View>
                   <View style={styles.containerFlex} />
                 </View>
+                {this.renderAddProductsInSales()}
                 {/*<TextInput style={styles.input} keyboardType='numeric' placeholder='Cantidad vendidos:' onChangeText={(text) => this.setState({add_sales_date_sale: text})} value={this.state.add_sales_date_sale} />*/}
                 <View style={{margin:7}} />
                 {/*<Button onPress={() => this.onPressAddButton('products')} title='Guardar' />*/}
