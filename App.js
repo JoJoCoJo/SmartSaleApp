@@ -627,6 +627,7 @@ export default class App extends Component<Props> {
                 <Text>No hay productos disponibles.</Text>
               </View>
             }
+            <View style={{margin:14}} />
           </ScrollView>
         )
       break;
@@ -674,6 +675,7 @@ export default class App extends Component<Props> {
                 <Text>No hay productos disponibles.</Text>
               </View>
             }
+            <View style={{margin:14}} />
           </ScrollView>
         )
       break;
@@ -726,6 +728,7 @@ export default class App extends Component<Props> {
                 <Text>No hay pronósticos disponibles.</Text>
               </View>
             }
+            <View style={{margin:14}} />
           </ScrollView>
         )
       break;
@@ -836,6 +839,7 @@ export default class App extends Component<Props> {
           <View style={styles.loading}>
             <View style={styles.loadingWrapper}>
               <ActivityIndicator size="large" color="#00ff00" />
+              <Text>Procesando...</Text>
             </View>
           </View>
         </Modal>
