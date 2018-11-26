@@ -389,8 +389,6 @@ export default class App extends Component<Props> {
       add_product_category_id,
       add_product_name,
       add_product_price,
-
-
       add_sales_category_id,
       add_sales_date_sale,
       add_sales_type_sale,
@@ -472,6 +470,11 @@ export default class App extends Component<Props> {
             add_product_category_id: '',
             add_product_name: '',
             add_product_price: '',
+            add_sales_category_id: '',
+            add_sales_date_sale: `${year}-${month}-${day}`,
+            add_sales_type_sale: '',
+            add_sales_show_total_units_sales: 1,
+            add_sales_products_total: 0
           })
           
           Alert.alert('', 'Registro agregado.')
