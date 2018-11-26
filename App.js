@@ -972,8 +972,10 @@ export default class App extends Component<Props> {
                 {this.renderAddProductsInSales()}
                 {/*<TextInput style={styles.input} keyboardType='numeric' placeholder='Cantidad vendidos:' onChangeText={(text) => this.setState({add_sales_date_sale: text})} value={this.state.add_sales_date_sale} />*/}
                 <View style={{margin:7}} />
-                {/*<Button onPress={() => this.onPressAddButton('products')} title='Guardar' />*/}
-                <View style={{margin:7}} />
+                <View style={styles.containerFlex}>
+                  <Button onPress={() => Alert.alert('', 'Clicked add Sale')} title='Guardar' />
+                </View>
+                <View style={{margin:14}} />
               </ScrollView>
             :
               <View>
