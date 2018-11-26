@@ -748,7 +748,16 @@ export default class App extends Component<Props> {
   renderAddProductsInSales(){
     let render = []
 
+    let { add_sales_products_id } = this.state
+
     for (let i = 1; i < (Number(this.state.add_sales_show_total_units_sales) + 1); i++) {
+      if (this.state.add_sales_products_id[`product${i}`] == undefined) {
+        add_sales_products_id[`product${i}`] = {
+          [`id_product${i}`]: null,
+          [`quantity_sale${i}`]: 0
+        }
+        this.setState({ add_sales_products_id })
+      }
       render.push(
         <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row'}} key={i}>
           <View style={{ justifyContent: 'center'}}>
@@ -757,17 +766,17 @@ export default class App extends Component<Props> {
           <View style={{ flex: 1, alignSelf: 'stretch'}}>
             { this.state.user.products && this.state.user.products.length > 0 ?
               <Picker
-                selectedValue={this.state.add_sales_products_id[`product${i}`]}
+                selectedValue={this.state.add_sales_products_id[`product${i}`][`id_product${i}`]}
                 style={styles.inputFlex}
                 mode='dropdown'
                 onValueChange={(itemValue) => {
                   let { add_sales_products_id } = this.state
-                  add_sales_products_id[`product${i}`] = itemValue 
+                  add_sales_products_id[`product${i}`][`id_product${i}`] = itemValue
                   this.setState({ add_sales_products_id }) 
                   }
                 }
               >
-                <Picker.Item label='Seleccione un producto' value={0} />
+                <Picker.Item label='Seleccione un producto' value={null} />
                 { this.state.user.products.map(
                     (product, p) => {
                       return(<Picker.Item label={product.name} value={product.id_product} key={p} />)
@@ -783,9 +792,9 @@ export default class App extends Component<Props> {
             <View style={styles.containerFlex}>
               <Button onPress={
                 () => {
-                  if (Number(this.state.add_sales_products_id[`quantity_sale${i}`]) > 1) {
+                  if (Number(this.state.add_sales_products_id[`product${i}`][`quantity_sale${i}`]) > 1) {
                     let { add_sales_products_id } = this.state
-                    add_sales_products_id[`quantity_sale${i}`] = Number(this.state.add_sales_products_id[`quantity_sale${i}`] != undefined ? this.state.add_sales_products_id[`quantity_sale${i}`] : 1 ) - 1
+                    add_sales_products_id[`product${i}`][`quantity_sale${i}`] = Number(this.state.add_sales_products_id[`product${i}`][`quantity_sale${i}`] != undefined ? this.state.add_sales_products_id[`product${i}`][`quantity_sale${i}`] : 1 ) - 1
                     this.setState({
                       add_sales_products_id
                     })
@@ -800,22 +809,17 @@ export default class App extends Component<Props> {
                 onChangeText={
                   (text) => {
                     let { add_sales_products_id } = this.state
-                    add_sales_products_id[`quantity_sale${i}`] = text
+                    add_sales_products_id[`product${i}`][`quantity_sale${i}`] = text
                     this.setState({ add_sales_products_id })
                   }
                 }
-                value={
-                  this.state.add_sales_products_id[`quantity_sale${i}`] != undefined ? 
-                  String(this.state.add_sales_products_id[`quantity_sale${i}`]) 
-                  : 
-                  '1'
-                } />
+                value={String(this.state.add_sales_products_id[`product${i}`][`quantity_sale${i}`])} />
             </View>
             <View style={styles.containerFlex}>
               <Button onPress={
                 () => {
                   let { add_sales_products_id } = this.state
-                  add_sales_products_id[`quantity_sale${i}`] = Number(this.state.add_sales_products_id[`quantity_sale${i}`] != undefined ? this.state.add_sales_products_id[`quantity_sale${i}`] : 1 ) + 1
+                  add_sales_products_id[`product${i}`][`quantity_sale${i}`] = Number(this.state.add_sales_products_id[`product${i}`][`quantity_sale${i}`] != undefined ? this.state.add_sales_products_id[`product${i}`][`quantity_sale${i}`] : 1 ) + 1
                   this.setState({ add_sales_products_id })
                 }
               } title='+' />
@@ -826,6 +830,11 @@ export default class App extends Component<Props> {
     }
 
     return render
+  }
+
+  renderTotalProductsToAdd(){
+
+    return <Text>{JSON.stringify(this.state.add_sales_products_id, null, 4)}</Text>
   }
 
   render() {
@@ -971,6 +980,8 @@ export default class App extends Component<Props> {
                 </View>
                 {this.renderAddProductsInSales()}
                 {/*<TextInput style={styles.input} keyboardType='numeric' placeholder='Cantidad vendidos:' onChangeText={(text) => this.setState({add_sales_date_sale: text})} value={this.state.add_sales_date_sale} />*/}
+                <View style={{margin:7}} />
+                {this.renderTotalProductsToAdd()}
                 <View style={{margin:7}} />
                 <View style={styles.containerFlex}>
                   <Button onPress={() => Alert.alert('', 'Clicked add Sale')} title='Guardar' />
