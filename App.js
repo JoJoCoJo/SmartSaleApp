@@ -138,6 +138,11 @@ const styles = StyleSheet.create({
 });
 
 type Props = {};
+
+let todayDate = new Date()
+let year      = todayDate.getFullYear()
+let month     = Number(todayDate.getMonth()) + 1
+let day       = String(todayDate.getDate()).length < 2 ? `0${todayDate.getDate()}` : todayDate.getDate()
 export default class App extends Component<Props> {
   constructor (props) {
     super(props)
@@ -159,7 +164,7 @@ export default class App extends Component<Props> {
       add_product_name: '',
       add_product_price: '',
       add_sales_category_id: 0,
-      add_sales_date_sale: new Date().toLocaleDateString(),
+      add_sales_date_sale: `${year}-${month}-${day}`,
       add_sales_type_sale: 0,
       add_sales_show_total_units_sales: 1,
       add_sales_products_id: {},
@@ -237,8 +242,8 @@ export default class App extends Component<Props> {
       });
 
       if (action === DatePickerAndroid.dateSetAction) {
-        let newDate = new Date(year, month, day);
-        this.setState({ [stateNewDate]: newDate.toLocaleDateString() })
+        /*String(todayDate.getDate()).length < 2 ? `0${todayDate.getDate()}` : todayDate.getDate()*/
+        this.setState({ [stateNewDate]: `${year}-${Number(month) + 1}-${String(day).length < 2 ? `0${day}` : day }` })
       }
     } catch ({code, message}) {
       console.warn('Cannot open date picker', message);
@@ -384,6 +389,13 @@ export default class App extends Component<Props> {
       add_product_category_id,
       add_product_name,
       add_product_price,
+
+
+      add_sales_category_id,
+      add_sales_date_sale,
+      add_sales_type_sale,
+      add_sales_products_id,
+      add_sales_products_total
     } = this.state
     let dataUrl = ''
 
@@ -393,6 +405,9 @@ export default class App extends Component<Props> {
       break;
       case 'products':
         dataUrl = `?user_id=${user.id_user}&category_id=${add_product_category_id}&name=${add_product_name}&price=${add_product_price}`
+      break;
+      case 'sales':
+        dataUrl = `?user_id=${user.id_user}&category_id=${add_sales_category_id}&date_sale`
       break;
     }
     console.log('dataUrl --->', dataUrl)
@@ -417,6 +432,21 @@ export default class App extends Component<Props> {
           if (json.errors.price) {
             if (json.errors.price.length > 0) {
               errors += `${json.errors.price[0]}\n`
+            }
+          }
+          if (json.errors.date_sale) {
+            if (json.errors.date_sale.length > 0) {
+              errors += `${json.errors.date_sale[0]}\n`
+            }
+          }
+          if (json.errors.total_units_sales) {
+            if (json.errors.total_units_sales.length > 0) {
+              errors += 'El Total de Productos debe ser mayor a 0.\n'
+            }
+          }
+          if (json.errors.type_sale) {
+            if (json.errors.type_sale.length > 0) {
+              errors += `${json.errors.type_sale[0]}\n`
             }
           }
 
@@ -997,7 +1027,7 @@ export default class App extends Component<Props> {
                 <Text>Total Productos: {this.state.add_sales_products_total}</Text>
                 <View style={{margin:7}} />
                 <View style={styles.containerFlex}>
-                  <Button onPress={() => Alert.alert('', 'Clicked add Sale')} title='Guardar' />
+                  <Button onPress={() => this.onPressAddButton('sales')} title='Guardar' />
                 </View>
                 <View style={{margin:14}} />
               </ScrollView>
