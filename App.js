@@ -162,7 +162,8 @@ export default class App extends Component<Props> {
       add_sales_date_sale: new Date().toLocaleDateString(),
       add_sales_type_sale: 0,
       add_sales_show_total_units_sales: 1,
-      add_sales_products_id: {}
+      add_sales_products_id: {},
+      add_sales_products_total: 0
     }
     this.onPressLogin = this.onPressLogin.bind(this)
   }
@@ -799,6 +800,7 @@ export default class App extends Component<Props> {
                       add_sales_products_id
                     })
                   }
+                  this.renderTotalProductsToAdd()
                 }
               } title='-' />
             </View>
@@ -821,6 +823,7 @@ export default class App extends Component<Props> {
                   let { add_sales_products_id } = this.state
                   add_sales_products_id[`product${i}`][`quantity_sale${i}`] = Number(this.state.add_sales_products_id[`product${i}`][`quantity_sale${i}`] != undefined ? this.state.add_sales_products_id[`product${i}`][`quantity_sale${i}`] : 1 ) + 1
                   this.setState({ add_sales_products_id })
+                  this.renderTotalProductsToAdd()
                 }
               } title='+' />
             </View>
@@ -833,8 +836,14 @@ export default class App extends Component<Props> {
   }
 
   renderTotalProductsToAdd(){
-
-    return <Text>{JSON.stringify(this.state.add_sales_products_id, null, 4)}</Text>
+    let totalProducts = 0
+    Object.keys(this.state.add_sales_products_id).forEach(
+      (product, p) => {
+        console.log('this.state.add_sales_products_id[product] --->', this.state.add_sales_products_id[product][`quantity_sale${p+1}`])
+        totalProducts = totalProducts + this.state.add_sales_products_id[product][`quantity_sale${p+1}`]
+      }
+    )
+    this.setState({add_sales_products_total: totalProducts })
   }
 
   render() {
@@ -861,7 +870,11 @@ export default class App extends Component<Props> {
           visible={this.state.modalAddVisible}
           onRequestClose={
             () => {
-              this.setState({ add_sales_show_total_units_sales: 1, add_sales_products_id: {} })
+              this.setState({
+                add_sales_show_total_units_sales: 1,
+                add_sales_products_id: {},
+                add_sales_products_total: 0
+              })
               this.setState({ modalAddVisible: false })
             }
           }
@@ -981,7 +994,7 @@ export default class App extends Component<Props> {
                 {this.renderAddProductsInSales()}
                 {/*<TextInput style={styles.input} keyboardType='numeric' placeholder='Cantidad vendidos:' onChangeText={(text) => this.setState({add_sales_date_sale: text})} value={this.state.add_sales_date_sale} />*/}
                 <View style={{margin:7}} />
-                {this.renderTotalProductsToAdd()}
+                <Text>Total Productos: {this.state.add_sales_products_total}</Text>
                 <View style={{margin:7}} />
                 <View style={styles.containerFlex}>
                   <Button onPress={() => Alert.alert('', 'Clicked add Sale')} title='Guardar' />
