@@ -163,7 +163,7 @@ export default class App extends Component<Props> {
       add_product_category_id: '',
       add_product_name: '',
       add_product_price: '',
-      add_sales_category_id: 0,
+      add_sales_category_id: '',
       add_sales_date_sale: `${year}-${month}-${day}`,
       add_sales_type_sale: '',
       add_sales_show_total_units_sales: 1,
@@ -407,7 +407,13 @@ export default class App extends Component<Props> {
         dataUrl = `?user_id=${user.id_user}&category_id=${add_product_category_id}&name=${add_product_name}&price=${add_product_price}`
       break;
       case 'sales':
-        dataUrl = `?user_id=${user.id_user}&category_id=${add_sales_category_id}&date_sale=${add_sales_date_sale}&type_sale=${add_sales_type_sale}`
+        if (add_sales_products_total > 0) {
+          dataUrl = `?user_id=${user.id_user}&category_id=${add_sales_category_id}&date_sale=${add_sales_date_sale}&type_sale=${add_sales_type_sale}&total_units_sales=${add_sales_products_total}`
+        }else{
+          Alert.alert('', 'Debe agregar al menos 1 producto a la venta')
+          return
+        }
+        
       break;
     }
     console.log('dataUrl --->', dataUrl)
@@ -974,7 +980,7 @@ export default class App extends Component<Props> {
                     mode='dropdown'
                     onValueChange={(itemValue) => this.setState({add_sales_category_id: itemValue})}
                   >
-                    <Picker.Item label='Sin Categoria' value={0} />
+                    <Picker.Item label='Sin Categoria' value='' />
                     { this.state.user.categories.map(
                         (categoriesUser, cu) => {
                           return(<Picker.Item label={categoriesUser.name} value={categoriesUser.id_category} key={cu} />)
