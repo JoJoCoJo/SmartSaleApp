@@ -793,8 +793,8 @@ export default class App extends Component<Props> {
     for (let i = 1; i < (Number(this.state.add_sales_show_total_units_sales) + 1); i++) {
       if (this.state.add_sales_products_id[`product${i}`] == undefined) {
         add_sales_products_id[`product${i}`] = {
-          [`id_product${i}`]: null,
-          [`quantity_sale${i}`]: 0
+          id_product: null,
+          quantity_sale: 0
         }
         this.setState({ add_sales_products_id })
       }
@@ -806,12 +806,12 @@ export default class App extends Component<Props> {
           <View style={{ flex: 1, alignSelf: 'stretch'}}>
             { this.state.user.products && this.state.user.products.length > 0 ?
               <Picker
-                selectedValue={this.state.add_sales_products_id[`product${i}`][`id_product${i}`]}
+                selectedValue={this.state.add_sales_products_id[`product${i}`].id_product}
                 style={styles.inputFlex}
                 mode='dropdown'
                 onValueChange={(itemValue) => {
                   let { add_sales_products_id } = this.state
-                  add_sales_products_id[`product${i}`][`id_product${i}`] = itemValue
+                  add_sales_products_id[`product${i}`].id_product = itemValue
                   this.setState({ add_sales_products_id }) 
                   }
                 }
@@ -832,9 +832,9 @@ export default class App extends Component<Props> {
             <View style={styles.containerFlex}>
               <Button onPress={
                 () => {
-                  if (Number(this.state.add_sales_products_id[`product${i}`][`quantity_sale${i}`]) > 1) {
+                  if (Number(this.state.add_sales_products_id[`product${i}`].quantity_sale) > 1) {
                     let { add_sales_products_id } = this.state
-                    add_sales_products_id[`product${i}`][`quantity_sale${i}`] = Number(this.state.add_sales_products_id[`product${i}`][`quantity_sale${i}`] != undefined ? this.state.add_sales_products_id[`product${i}`][`quantity_sale${i}`] : 1 ) - 1
+                    add_sales_products_id[`product${i}`].quantity_sale = Number(this.state.add_sales_products_id[`product${i}`].quantity_sale != undefined ? this.state.add_sales_products_id[`product${i}`].quantity_sale : 1 ) - 1
                     this.setState({
                       add_sales_products_id
                     })
@@ -850,17 +850,17 @@ export default class App extends Component<Props> {
                 onChangeText={
                   (text) => {
                     let { add_sales_products_id } = this.state
-                    add_sales_products_id[`product${i}`][`quantity_sale${i}`] = text
+                    add_sales_products_id[`product${i}`].quantity_sale = text
                     this.setState({ add_sales_products_id })
                   }
                 }
-                value={String(this.state.add_sales_products_id[`product${i}`][`quantity_sale${i}`])} />
+                value={String(this.state.add_sales_products_id[`product${i}`].quantity_sale)} />
             </View>
             <View style={styles.containerFlex}>
               <Button onPress={
                 () => {
                   let { add_sales_products_id } = this.state
-                  add_sales_products_id[`product${i}`][`quantity_sale${i}`] = Number(this.state.add_sales_products_id[`product${i}`][`quantity_sale${i}`] != undefined ? this.state.add_sales_products_id[`product${i}`][`quantity_sale${i}`] : 1 ) + 1
+                  add_sales_products_id[`product${i}`].quantity_sale = Number(this.state.add_sales_products_id[`product${i}`].quantity_sale != undefined ? this.state.add_sales_products_id[`product${i}`].quantity_sale : 1 ) + 1
                   this.setState({ add_sales_products_id })
                   this.renderTotalProductsToAdd()
                 }
@@ -878,8 +878,8 @@ export default class App extends Component<Props> {
     let totalProducts = 0
     Object.keys(this.state.add_sales_products_id).forEach(
       (product, p) => {
-        console.log('this.state.add_sales_products_id[product] --->', this.state.add_sales_products_id[product][`quantity_sale${p+1}`])
-        totalProducts = totalProducts + this.state.add_sales_products_id[product][`quantity_sale${p+1}`]
+        console.log('this.state.add_sales_products_id[product] --->', this.state.add_sales_products_id[`product${p+1}`].quantity_sale)
+        totalProducts = totalProducts + this.state.add_sales_products_id[`product${p+1}`].quantity_sale
       }
     )
     this.setState({add_sales_products_total: totalProducts })
@@ -1017,7 +1017,12 @@ export default class App extends Component<Props> {
                     <Button onPress={
                       () => {
                         if (this.state.add_sales_show_total_units_sales > 1) {
-                          this.setState({add_sales_show_total_units_sales: Number(this.state.add_sales_show_total_units_sales) - 1 })
+                          console.log('onPress - 1 totalProducts ---->', this.state.add_sales_products_total)
+                          console.log('onPress - 1 Object.keys(this.state.add_sales_products_id).length ---->', Object.keys(this.state.add_sales_products_id).length)
+                          let length = Object.keys(this.state.add_sales_products_id).length
+                          this.setState({ add_sales_show_total_units_sales: Number(this.state.add_sales_show_total_units_sales) - 1 })
+                          this.setState({ 
+                            add_sales_products_total: Number(this.state.add_sales_products_total) - this.state.add_sales_products_id[`product${length}`].quantity_sale })
                         }
                       }
                     } title='-' />
