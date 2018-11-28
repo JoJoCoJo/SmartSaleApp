@@ -194,7 +194,7 @@ export default class App extends Component<Props> {
         Alert.alert(
           '',
           '¿Desea cerrar sesión?',
-          [ {text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          [ {text: 'Cancelar', onPress: () => console.log('Line 197: Cancel Pressed'), style: 'cancel'},
             {text: 'Salir', onPress: () => this.setState({view: 'login'}) },
           ],
           { cancelable: false }
@@ -216,7 +216,7 @@ export default class App extends Component<Props> {
         Alert.alert(
           '',
           '¿Desea salir de la app?',
-          [ {text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          [ {text: 'Cancelar', onPress: () => console.log('Line 219: Cancel Pressed'), style: 'cancel'},
             {text: 'Salir', onPress: () => BackHandler.exitApp() },
           ],
           { cancelable: false }
@@ -259,19 +259,19 @@ export default class App extends Component<Props> {
     .then(
       (json) => {
         if (json.code === 200) {
-          console.log('json if ---->', json)
+          console.log('Line 262: json if ---->', json)
           return fetch(`${rootUrl}/users/read/${json.data[0].id_user}/categories,products,sales,SalesProducts,forecasts`);
         }else{
-          console.log('json else --->', json)
+          console.log('Line 265: json else --->', json)
           this.setState({loading: false})
           Alert.alert('', 'Usuario y/o contraseña incorrectos.')
         }
       }
     )
-    .then((dataUser) => { console.log('dataUser first --->', dataUser); return dataUser.json() })
+    .then((dataUser) => { console.log('Line 271: dataUser first --->', dataUser); return dataUser.json() })
     .then(
       (dataUserRes) => {
-        console.log('dataUserRes ---->', dataUserRes.data[0])
+        console.log('Line 274: dataUserRes ---->', dataUserRes.data[0])
         this.setState({user: dataUserRes.data[0]})
         this.setState({view: 'menu'})
         this.setState({loading: false})
@@ -297,7 +297,7 @@ export default class App extends Component<Props> {
     )
     .then(
       (json) => {
-        console.log('json ---->', json)
+        console.log('Line 300: json ---->', json)
         let errors = ''
         if (json.errors) {
           this.setState({loading: false})
@@ -345,12 +345,12 @@ export default class App extends Component<Props> {
     Alert.alert(
       '',
       '¿Desea eliminar el registro?',
-      [ {text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+      [ {text: 'Cancelar', onPress: () => console.log('Line 348: Cancel Pressed'), style: 'cancel'},
         {text: 'Eliminar', onPress: () => {
             this.setState({loading: true})
             fetch(`${rootUrl}/${table}/delete/?${id_name}=${id}`)
             .then(
-              (res) => { console.log('res --->', res); return res.json(); }
+              (res) => { console.log('Line 353: res --->', res); return res.json(); }
             )
             .then(
               (json) => {
@@ -414,13 +414,13 @@ export default class App extends Component<Props> {
         
       break;
     }
-    console.log('dataUrl --->', dataUrl)
+    console.log('Line 417: dataUrl --->', dataUrl)
     this.setState({loading: true})
     fetch(`${rootUrl}/${table}/create/${dataUrl}`)
     .then((res) => { return res.json() })
     .then(
       (json) => {
-        console.log('json ---->', json)
+        console.log('Line 423: json ---->', json)
         let errors = ''
         if (json.errors) {
           if (json.errors.name) {
@@ -459,7 +459,7 @@ export default class App extends Component<Props> {
             Alert.alert('', errors)
           }
         }else{
-          console.log('json data --->', json.data)
+          console.log('Line 462: json data --->', json.data)
           
           user[`${table}`].push(json.data)
           this.setState({ user })
@@ -878,16 +878,16 @@ export default class App extends Component<Props> {
     let totalProducts = 0
     Object.keys(this.state.add_sales_products_id).forEach(
       (product, p) => {
-        console.log('this.state.add_sales_products_id[product] --->', this.state.add_sales_products_id[`product${p+1}`].quantity_sale)
         totalProducts = totalProducts + this.state.add_sales_products_id[`product${p+1}`].quantity_sale
       }
     )
+    console.log('Line 884: totalProducts --->', totalProducts)
     this.setState({add_sales_products_total: totalProducts })
   }
 
   render() {
-    console.log('this.state ---->', this.state)
-    console.log('this.state.user ---->', this.state.user)
+    console.log('Line 889: this.state ---->', this.state)
+    console.log('Line 890: this.state.user ---->', this.state.user)
     return(
       <View style={styles.containerFlex}>
         <Modal
