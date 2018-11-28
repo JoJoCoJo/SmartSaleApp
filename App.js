@@ -478,6 +478,112 @@ export default class App extends Component<Props> {
     )
   }
 
+  onPressAddButtonSales(){
+    let {
+      user,
+      add_sales_category_id,
+      add_sales_date_sale,
+      add_sales_type_sale,
+      add_sales_products_id,
+      add_sales_products_total
+    } = this.state
+    let dataUrl = ''
+
+    if (add_sales_products_total > 0) {
+      let errors = ''
+
+      Object.keys(add_sales_products_id).forEach(
+        (product_id, p) => {
+          if (add_sales_products_id[product_id].id_product === null) {
+            errors += `Sin producto en la fila ${p+1}\n`
+          }
+          if (add_sales_products_id[product_id].quantity_sale === 0) {
+            errors += `0 productos en la fila ${p+1}\n`
+          }
+        }
+      )
+      if (errors !== '') {
+        Alert.alert('', errors)
+        return
+      }
+      dataUrl = `?user_id=${user.id_user}&category_id=${add_sales_category_id}&date_sale=${add_sales_date_sale}&type_sale=${add_sales_type_sale}&total_units_sales=${add_sales_products_total}`
+      this.setState({ loading: true })
+      fetch(`${rootUrl}/sales/create/${dataUrl}`)
+      .then((res) => {return res.json()})
+      .then(
+        (json) => {
+          let errors = ''
+          if (json.errors) {
+            console.log('Line 514: json ---->', json)
+            if (json.errors.date_sale) {
+              if (json.errors.date_sale.length > 0) {
+                errors += `${json.errors.date_sale[0]}\n`
+              }
+            }
+            if (json.errors.total_units_sales) {
+              if (json.errors.total_units_sales.length > 0) {
+                errors += 'El Total de Productos debe ser mayor a 0.\n'
+              }
+            }
+            if (json.errors.type_sale) {
+              if (json.errors.type_sale.length > 0) {
+                errors += `${json.errors.type_sale[0]}\n`
+              }
+            }
+
+            if (errors !== '') {
+              this.setState({loading: false})
+              Alert.alert('', errors)
+            }
+          }else{
+            console.log('Line 553: json --->', json)
+            let dataUrlToAddSalesProducts = ''
+            let fetchAll = []
+            Object.keys(add_sales_products_id).forEach(
+              (product_id, p) => {
+                dataUrlToAddSalesProducts = `?sale_id=${json.data.id_sale}&product_id=${add_sales_products_id[product_id].id_product}&units_sales_product=${add_sales_products_id[product_id].quantity_sale}`
+                fetchAll.push(fetch(`${rootUrl}/sales_products/create/${dataUrlToAddSalesProducts}`))
+              }
+            )
+            Promise.all(fetchAll)
+            .then(
+              (res) => {
+                console.clear()
+                console.log('Line 552: res --->', res)
+                console.log('Line 553: res.length --->', res.length)
+                let allJsonPromises = []
+                res.forEach(
+                  (response) => {
+                    console.log('556: response --->', response)
+                    allJsonPromises.push(response.json())
+                  }
+                )
+                return Promise.all(allJsonPromises)
+              }
+            )
+            .then(
+              (json) => {
+                console.log('564: json --->', json)
+                console.log('565: json.length --->', json.length)
+                Alert.alert('', 'Registro agregado.')
+                this.setState({modalAddVisible: false, loading: false})
+              }
+            )
+            .catch(
+              (error) =>{
+                console.log('570: error --->', error)
+                this.setState({ loading: false })
+              }
+            )
+          }
+        }
+      )
+    }else{
+      Alert.alert('', 'Debe agregar al menos 1 producto a la venta')
+      return
+    }
+  }
+
   renderView(){
     let render = []    
     switch (this.state.view) {
@@ -1039,7 +1145,7 @@ export default class App extends Component<Props> {
                 <Text>Total Productos: {this.state.add_sales_products_total}</Text>
                 <View style={{margin:7}} />
                 <View style={styles.containerFlex}>
-                  <Button onPress={() => this.onPressAddButtonSales())} title='Guardar' />
+                  <Button onPress={() => this.onPressAddButtonSales()} title='Guardar' />
                 </View>
                 <View style={{margin:14}} />
               </ScrollView>
