@@ -1017,12 +1017,17 @@ export default class App extends Component<Props> {
                     <Button onPress={
                       () => {
                         if (this.state.add_sales_show_total_units_sales > 1) {
-                          console.log('onPress - 1 totalProducts ---->', this.state.add_sales_products_total)
-                          console.log('onPress - 1 Object.keys(this.state.add_sales_products_id).length ---->', Object.keys(this.state.add_sales_products_id).length)
                           let length = Object.keys(this.state.add_sales_products_id).length
-                          this.setState({ add_sales_show_total_units_sales: Number(this.state.add_sales_show_total_units_sales) - 1 })
-                          this.setState({ 
-                            add_sales_products_total: Number(this.state.add_sales_products_total) - this.state.add_sales_products_id[`product${length}`].quantity_sale })
+                          let { add_sales_products_id } = this.state
+
+                          this.setState({
+                            add_sales_show_total_units_sales: Number(this.state.add_sales_show_total_units_sales) - 1,
+                            add_sales_products_total: Number(this.state.add_sales_products_total) - this.state.add_sales_products_id[`product${length}`].quantity_sale
+                          })
+
+                          delete add_sales_products_id[`product${length}`]
+                          this.setState({ add_sales_products_id })
+
                         }
                       }
                     } title='-' />
