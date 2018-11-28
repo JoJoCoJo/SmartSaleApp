@@ -404,35 +404,11 @@ export default class App extends Component<Props> {
       case 'products':
         dataUrl = `?user_id=${user.id_user}&category_id=${add_product_category_id}&name=${add_product_name}&price=${add_product_price}`
       break;
-      case 'sales':
-        if (add_sales_products_total > 0) {
-          let errors = ''
-
-          Object.keys(add_sales_products_id).forEach(
-            (product_id, p) => {
-              if (add_sales_products_id[product_id].id_product === null) {
-                errors += `Sin producto en la fila ${p+1}\n`
-              }
-              if (add_sales_products_id[product_id].quantity_sale === 0) {
-                errors += `0 productos en la fila ${p+1}\n`
-              }
-            }
-          )
-          if (errors !== '') {
-            Alert.alert('', errors)
-            return
-          }
-          dataUrl = `?user_id=${user.id_user}&category_id=${add_sales_category_id}&date_sale=${add_sales_date_sale}&type_sale=${add_sales_type_sale}&total_units_sales=${add_sales_products_total}`
-          return
-        }else{
-          Alert.alert('', 'Debe agregar al menos 1 producto a la venta')
-          return
-        }
-      break;
     }
-    console.log('Line 434: dataUrl --->', dataUrl)
+
+    console.log('Line 408: dataUrl --->', dataUrl)
     this.setState({loading: true})
-    
+
     fetch(`${rootUrl}/${table}/create/${dataUrl}`)
     .then((res) => { return res.json() })
     .then(
@@ -1063,7 +1039,7 @@ export default class App extends Component<Props> {
                 <Text>Total Productos: {this.state.add_sales_products_total}</Text>
                 <View style={{margin:7}} />
                 <View style={styles.containerFlex}>
-                  <Button onPress={() => this.onPressAddButton('sales')} title='Guardar' />
+                  <Button onPress={() => this.onPressAddButtonSales())} title='Guardar' />
                 </View>
                 <View style={{margin:14}} />
               </ScrollView>
