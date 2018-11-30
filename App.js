@@ -626,7 +626,7 @@ export default class App extends Component<Props> {
             Alert.alert('', 'Necesitan haber al menos 3 ventas anteriores.')
             return
           }else{
-            let varPromedioDias1y2 = Math.round((Number(user.sales[s-2].total_units_sales) + Number(user.sales[s-1].total_units_sales)) / 2)
+            let varPromedioDias1y2 = Math.round((Number(user.sales[s-1].total_units_sales) + Number(user.sales[s].total_units_sales)) / 2)
             newForecastData = {
               dia1: Number(user.sales[s].total_units_sales),
               dia2: Number(user.sales[s-1].total_units_sales),
@@ -951,19 +951,15 @@ export default class App extends Component<Props> {
             { this.state.user.forecasts && this.state.user.forecasts.length > 0 ?
                 this.state.user.forecasts.map(
                   (forecast, f) => {
+                    let parseJSONForecastData = JSON.parse(forecast.forecastData)
                     return(
                       <View style={styles.card} key={f}>
                         <View style={{ flex: 5, alignSelf: 'stretch', padding: 5 }} >
                           <Text style={styles.link} onPress={() => Alert.alert('', `Info pronóstico: ${forecast.id_forecast}`)}>{`ID: #${forecast.id_forecast}\nVenta: ${forecast.sale_id}`}</Text>
                         </View>
                         <View style={styles.containerFlex} >
-                          <TouchableOpacity onPress={() => Alert.alert('', `Generar datos del pronóstico: ${forecast.id_forecast}`)}>
+                          <TouchableOpacity onPress={() => Alert.alert('', `Día 1: ${parseJSONForecastData.dia1}\nDía 2: ${parseJSONForecastData.dia2}\nDía 3: ${parseJSONForecastData.dia3}\nPromedio (Día 1 - Día 2): ${parseJSONForecastData.promedioDias1y2}\nPronóstico Día 4: ${parseJSONForecastData.pronostico4toDia}`)}>
                             <Image style={styles.imagesActions} source={DataIcon} />
-                          </TouchableOpacity>
-                        </View>
-                        <View style={styles.containerFlex} >
-                          <TouchableOpacity onPress={() => Alert.alert('', `Generar gráfica del pronóstico: ${forecast.id_forecast}`)}>
-                            <Image style={styles.imagesActions} source={GraphsIcon} />
                           </TouchableOpacity>
                         </View>
                         <View style={styles.containerFlex} >
