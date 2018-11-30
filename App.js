@@ -168,7 +168,8 @@ export default class App extends Component<Props> {
       add_sales_type_sale: '',
       add_sales_show_total_units_sales: 1,
       add_sales_products_id: {},
-      add_sales_products_total: 0
+      add_sales_products_total: 0,
+      add_forecast_id_sale: 0
     }
     this.onPressLogin = this.onPressLogin.bind(this)
   }
@@ -446,6 +447,21 @@ export default class App extends Component<Props> {
               errors += `${json.errors.type_sale[0]}\n`
             }
           }
+          if (json.errors.forecastData) {
+            if (json.errors.forecastData.length > 0) {
+              errors += `No se generaron correctamente los datos del pronóstico.\n`
+            }
+          }
+          if (json.errors.sale_id) {
+            if (json.errors.sale_id.length > 0) {
+              errors += `${json.errors.sale_id[0]}\n`
+            }
+          }
+          if (json.errors.type_forecast) {
+            if (json.errors.type_forecast.length > 0) {
+              errors += `${json.errors.type_forecast[0]}\n`
+            }
+          }
 
           if (errors !== '') {
             this.setState({loading: false})
@@ -537,6 +553,8 @@ export default class App extends Component<Props> {
             }
           }else{
             console.log('Line 553: json --->', json)
+            user['sales'].push(json.data)
+            this.setState({ user })
             let dataUrlToAddSalesProducts = ''
             let fetchAll = []
             Object.keys(add_sales_products_id).forEach(
@@ -548,7 +566,6 @@ export default class App extends Component<Props> {
             Promise.all(fetchAll)
             .then(
               (res) => {
-                console.clear()
                 console.log('Line 552: res --->', res)
                 console.log('Line 553: res.length --->', res.length)
                 let allJsonPromises = []
@@ -563,10 +580,18 @@ export default class App extends Component<Props> {
             )
             .then(
               (json) => {
-                console.log('564: json --->', json)
-                console.log('565: json.length --->', json.length)
+                console.log('581: json --->', json)
+                console.log('582: json.length --->', json.length)
+
                 Alert.alert('', 'Registro agregado.')
-                this.setState({modalAddVisible: false, loading: false})
+                this.setState({
+                  add_sales_category_id: '',
+                  add_sales_date_sale: `${year}-${month}-${day}`,
+                  add_sales_type_sale: '',
+                  add_sales_show_total_units_sales: 1,
+                  add_sales_products_id: {},
+                  add_sales_products_total: 0,
+                })
               }
             )
             .catch(
@@ -575,6 +600,8 @@ export default class App extends Component<Props> {
                 this.setState({ loading: false })
               }
             )
+
+            this.setState({modalAddVisible: false, loading: false})
           }
         }
       )
@@ -582,6 +609,92 @@ export default class App extends Component<Props> {
       Alert.alert('', 'Debe agregar al menos 1 producto a la venta')
       return
     }
+  }
+
+  async onPressAddButtonForecast(){
+    console.clear('')
+    let { user, add_forecast_id_sale } = this.state
+    let alpha = 0.8
+    let alphaMinusOne = 0.2
+    let newForecastData
+
+    user.sales.forEach(
+      (sale, s) => {
+        if (sale.id_sale === add_forecast_id_sale) {
+
+          if ((user.sales[s - 2]) === undefined) {
+            Alert.alert('', 'Necesitan haber al menos 3 ventas anteriores.')
+            return
+          }else{
+            let varPromedioDias1y2 = Math.round((Number(user.sales[s-2].total_units_sales) + Number(user.sales[s-1].total_units_sales)) / 2)
+            newForecastData = {
+              dia1: Number(user.sales[s].total_units_sales),
+              dia2: Number(user.sales[s-1].total_units_sales),
+              dia3: Number(user.sales[s-2].total_units_sales),
+              promedioDias1y2: varPromedioDias1y2,
+              pronostico4toDia: Math.round(Number(((alpha * Number(user.sales[s-2].total_units_sales)) + (alphaMinusOne * varPromedioDias1y2))))
+            }
+            console.log('637: newForecastData ----->', newForecastData)
+            console.log('637: JSON.stringify(newForecastData) ----->', JSON.stringify(newForecastData))
+          }
+        }
+
+      }
+    )
+    
+    await newForecastData
+    this.setState({loading: true})
+
+    let dataUrl = `?user_id=${user.id_user}&sale_id=${add_forecast_id_sale}&type_forecast=1&forecastData=${JSON.stringify(newForecastData)}`
+
+    fetch(`${rootUrl}/forecast/create/${dataUrl}`)
+    .then((res) => { return res.json() })
+    .then(
+      (json) => {
+        console.log('Line 654: json ---->', json)
+        let errors = ''
+        if (json.errors) {
+          if (json.errors.type_sale) {
+            if (json.errors.type_sale.length > 0) {
+              errors += `${json.errors.type_sale[0]}\n`
+            }
+          }
+          if (json.errors.forecastData) {
+            if (json.errors.forecastData.length > 0) {
+              errors += `No se generaron correctamente los datos del pronóstico.\n`
+            }
+          }
+          if (json.errors.sale_id) {
+            if (json.errors.sale_id.length > 0) {
+              errors += `${json.errors.sale_id[0]}\n`
+            }
+          }
+          if (json.errors.type_forecast) {
+            if (json.errors.type_forecast.length > 0) {
+              errors += `${json.errors.type_forecast[0]}\n`
+            }
+          }
+
+          if (errors !== '') {
+            this.setState({loading: false})
+            Alert.alert('', errors)
+          }
+        }else{
+          console.log('Line 683: json data --->', json.data)
+          
+          user['forecasts'].push(json.data)
+          this.setState({ user })
+
+          this.setState({
+            add_forecast_id_sale: 0
+          })
+          
+          Alert.alert('', 'Registro agregado.')
+          this.setState({loading: false})
+          this.setState({modalAddVisible: false})
+        }
+      }
+    )
   }
 
   renderView(){
@@ -1151,7 +1264,35 @@ export default class App extends Component<Props> {
               </ScrollView>
             :
               <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
-                <Text>Agregar pronósticos</Text>
+                <View style={styles.containerFlex}>
+                  <View style={{margin:7}} />
+                  <Text style={{fontSize: 27, textAlign: 'center'}}>
+                    Nuevo Pronóstico (Suavización Exponencial)
+                  </Text>
+                </View>
+                <View style={{margin:14}} />
+                { this.state.user.sales && this.state.user.sales.length > 0 ?
+                  <Picker
+                    selectedValue={this.state.add_forecast_id_sale}
+                    style={styles.input}
+                    mode='dropdown'
+                    onValueChange={(itemValue) => this.setState({add_forecast_id_sale: itemValue})}
+                  >
+                    <Picker.Item label='Seleccione una venta' value={0} />
+                    { this.state.user.sales.map(
+                        (salesUser, su) => {
+                          return(<Picker.Item label={`Venta ID: ${salesUser.id_sale}`} value={salesUser.id_sale} key={su} />)
+                        }
+                      )
+                    }
+                  </Picker>
+                  :
+                  <Text>No hay ventas disponibles. Puede ingresar nuevas en el apartado de ventas.</Text>
+                }
+                <View style={styles.containerFlex}>
+                  <Button onPress={() => this.onPressAddButtonForecast()} title='Generar pronóstico' />
+                </View>
+                <View style={{margin:7}} />
               </ScrollView>
           }
         </Modal>        
