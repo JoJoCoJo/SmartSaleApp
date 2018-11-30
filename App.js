@@ -833,7 +833,7 @@ export default class App extends Component<Props> {
               />
             </View>
             <View style={{margin:7}} />
-            <Button onPress={() => this.setState({modalAddVisible: true, modalAddType: 'forecasts'})} title='Nuevo Pronóstico' />
+            <Button onPress={() => this.setState({modalAddVisible: true, modalAddType: 'forecasts'})} title='Nuevo Pronóstico (Suavización Exponencial)' />
             <View style={{margin:7}} />
             { this.state.user.forecasts && this.state.user.forecasts.length > 0 ?
                 this.state.user.forecasts.map(
@@ -1150,9 +1150,9 @@ export default class App extends Component<Props> {
                 <View style={{margin:14}} />
               </ScrollView>
             :
-              <View>
+              <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
                 <Text>Agregar pronósticos</Text>
-              </View>
+              </ScrollView>
           }
         </Modal>        
         { this.renderView() }
