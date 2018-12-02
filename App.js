@@ -25,6 +25,13 @@ import {
   TouchableOpacity,
   Modal
 } from 'react-native';
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph
+} from 'react-native-chart-kit';
 import Dimensions from 'Dimensions';
 import SplashLogo from './assets/splash.png';
 import DeleteIcon from './assets/delete.png';
@@ -962,6 +969,11 @@ export default class App extends Component<Props> {
                           </TouchableOpacity>
                         </View>
                         <View style={styles.containerFlex} >
+                          <TouchableOpacity onPress={() => this.setState({modalAddVisible: true, modalAddType: 'graphs'})}>
+                            <Image style={styles.imagesActions} source={GraphsIcon} />
+                          </TouchableOpacity>
+                        </View>
+                        <View style={styles.containerFlex} >
                           <TouchableOpacity onPress={() => this.onPressDeleteIcon('forecast', 'id_forecast', forecast.id_forecast)}>
                             <Image style={styles.imagesActions} source={DeleteIcon} />
                           </TouchableOpacity>
@@ -1095,6 +1107,17 @@ export default class App extends Component<Props> {
   render() {
     console.log('Line 889: this.state ---->', this.state)
     console.log('Line 890: this.state.user ---->', this.state.user)
+    const chartConfig = {
+      backgroundColor: '#ffffff',
+      backgroundGradientFrom: '#ffffff',
+      backgroundGradientTo: '#ffffff',
+      decimalPlaces: 0, // optional, defaults to 2dp
+      color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+      style: {
+        borderRadius: 16
+      }
+    }
+
     return(
       <View style={styles.containerFlex}>
         <Modal
@@ -1258,6 +1281,7 @@ export default class App extends Component<Props> {
                 <View style={{margin:14}} />
               </ScrollView>
             :
+            this.state.modalAddType === 'forecasts' ?
               <ScrollView contentContainerStyle={styles.containerWithoutFlex}>
                 <View style={styles.containerFlex}>
                   <View style={{margin:7}} />
@@ -1289,6 +1313,36 @@ export default class App extends Component<Props> {
                 </View>
                 <View style={{margin:7}} />
               </ScrollView>
+            :
+            this.state.modalAddType === 'graphs' &&
+              <View style={styles.containerFlex}>
+                <Text>
+                  Bezier Line Chart
+                </Text>
+                <LineChart
+                  data={{
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                      data: [
+                        Math.random() * 100,
+                        Math.random() * 100,
+                        Math.random() * 100,
+                        Math.random() * 100,
+                        Math.random() * 100,
+                        Math.random() * 100
+                      ]
+                    }]
+                  }}
+                  width={Dimensions.get('window').width} // from react-native
+                  height={220}
+                  chartConfig={chartConfig}
+                  bezier
+                  style={{
+                    marginVertical: 8,
+                    borderRadius: 16
+                  }}
+                />
+              </View>
           }
         </Modal>        
         { this.renderView() }
