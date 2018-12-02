@@ -152,8 +152,8 @@ export default class App extends Component<Props> {
       modalAddVisible: false,
       modalAddType: '',
       user: {},
-      login_user: '',
-      login_pass: '',
+      login_user: 'jojo@msn.com',
+      login_pass: '1234567',
       register_user: '',
       register_pass: '',
       register_names: '',
@@ -612,7 +612,6 @@ export default class App extends Component<Props> {
   }
 
   async onPressAddButtonForecast(){
-    console.clear('')
     let { user, add_forecast_id_sale } = this.state
     let alpha = 0.8
     let alphaMinusOne = 0.2
