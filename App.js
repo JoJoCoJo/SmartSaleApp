@@ -25,13 +25,7 @@ import {
   TouchableOpacity,
   Modal
 } from 'react-native';
-/*import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph
-} from 'react-native-chart-kit';*/
+import { LineChart } from 'react-native-chart-kit';
 import Dimensions from 'Dimensions';
 import SplashLogo from './assets/splash.png';
 import DeleteIcon from './assets/delete.png';
@@ -1314,10 +1308,7 @@ export default class App extends Component<Props> {
                 <View style={{margin:7}} />
               </ScrollView>
             :
-              <View style={styles.containerFlex}>
-                <Text>Ha ocurrido un error. Reinicie la app.</Text>
-              </View>
-            /*this.state.modalAddType === 'graphs' &&
+            this.state.modalAddType === 'graphs' ?
               <View style={styles.containerFlex}>
                 <Text>
                   Bezier Line Chart
@@ -1345,7 +1336,11 @@ export default class App extends Component<Props> {
                     borderRadius: 16
                   }}
                 />
-              </View>*/
+              </View>
+            : 
+              <View style={styles.containerFlex}>
+                <Text>Ha ocurrido un error. Reinicie la app.</Text>
+              </View>
           }
         </Modal>        
         { this.renderView() }
