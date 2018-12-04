@@ -973,10 +973,23 @@ export default class App extends Component<Props> {
                     return(
                       <View style={styles.card} key={f}>
                         <View style={{ flex: 5, alignSelf: 'stretch', padding: 5 }} >
-                          <Text style={styles.link} onPress={() => Alert.alert('', `Info pronóstico: ${forecast.id_forecast}`)}>{`ID: #${forecast.id_forecast}\nVenta: ${forecast.sale_id}`}</Text>
+                          <Text style={styles.link} onPress={() => Alert.alert(`Pronóstico: #${forecast.id_forecast}`, `Tipo: ${forecast.type_forecast == 1 ? 'Suavización Exponencial' : 'No se pudo determinar el tipo.'}`)}>{`Pronóstico: #${forecast.id_forecast}`}</Text>
                         </View>
                         <View style={styles.containerFlex} >
-                          <TouchableOpacity onPress={() => Alert.alert('', `Día 1: ${parseJSONForecastData.dia1}\nDía 2: ${parseJSONForecastData.dia2}\nDía 3: ${parseJSONForecastData.dia3}\nPromedio (Día 1 - Día 2): ${parseJSONForecastData.promedioDias1y2}\nPronóstico Día 4: ${parseJSONForecastData.pronostico4toDia}`)}>
+                          <TouchableOpacity onPress={
+                            () => {
+                              //`Día 1: ${parseJSONForecastData.dia1}\nDía 2: ${parseJSONForecastData.dia2}\nDía 3: ${parseJSONForecastData.dia3}\nPromedio: ${parseJSONForecastData.promedioDiasTotal}\nPronóstico Sig. Día: ${parseJSONForecastData.pronosticoSiguienteDia}`
+                              let textDays = ''
+                              Object.keys(parseJSONForecastData).forEach(
+                                (dia, d) => {
+                                  if (parseJSONForecastData[`dia${d+1}`] !== undefined) {
+                                    textDays += `Dia ${d+1}: ${parseJSONForecastData[`dia${d+1}`]}\n`
+                                  }
+                                }
+                              )
+                              Alert.alert('', `${textDays}Promedio: ${parseJSONForecastData.promedioDiasTotal}\nPronóstico Sig. Día: ${parseJSONForecastData.pronosticoSiguienteDia}`)
+                            }
+                          }>
                             <Image style={styles.imagesActions} source={DataIcon} />
                           </TouchableOpacity>
                         </View>
