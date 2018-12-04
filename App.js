@@ -1011,7 +1011,6 @@ export default class App extends Component<Props> {
                           <TouchableOpacity onPress={
                             () => {
                               let { modalGraphData } = this.state
-                              this.setState({modalAddVisible: true, modalAddType: 'graphs', modalTitleGraph: `Pronóstico: #${forecast.id_forecast}`})
                               let labelsToSet = []
                               let dataToSet = []
                               Object.keys(parseJSONForecastData).forEach(
@@ -1025,6 +1024,7 @@ export default class App extends Component<Props> {
                               modalGraphData.labels = labelsToSet
                               modalGraphData.datasets[0].data = dataToSet
                               this.setState({ modalGraphData })
+                              this.setState({modalAddVisible: true, modalAddType: 'graphs', modalTitleGraph: `Pronóstico: #${forecast.id_forecast}`})
                             }
                           }>
                             <Image style={styles.imagesActions} source={GraphsIcon} />
