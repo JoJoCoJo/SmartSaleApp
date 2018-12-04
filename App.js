@@ -167,8 +167,8 @@ export default class App extends Component<Props> {
         }]
       },
       user: {},
-      login_user: 'jojo@msn.com',
-      login_pass: '1234567',
+      login_user: '',
+      login_pass: '',
       register_user: '',
       register_pass: '',
       register_names: '',
