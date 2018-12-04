@@ -170,7 +170,9 @@ export default class App extends Component<Props> {
       add_sales_show_total_units_sales: 1,
       add_sales_products_id: {},
       add_sales_products_total: 0,
-      add_forecast_id_sale: 0
+      add_forecast_id_product: 0,
+      add_forecast_type_forecast: null,
+      add_forecast_type_forecast_name: ''
     }
     this.onPressLogin = this.onPressLogin.bind(this)
   }
@@ -613,40 +615,52 @@ export default class App extends Component<Props> {
   }
 
   async onPressAddButtonForecast(){
-    let { user, add_forecast_id_sale } = this.state
+    let { user, add_forecast_id_product, add_forecast_type_forecast } = this.state
+    let totalProductsFind = []
+    let newForecastData = {}
     let alpha = 0.8
     let alphaMinusOne = 0.2
-    let newForecastData
+    this.setState({loading: true})    
 
-    user.sales.forEach(
-      (sale, s) => {
-        if (sale.id_sale === add_forecast_id_sale) {
-
-          if ((user.sales[s - 2]) === undefined) {
-            Alert.alert('', 'Necesitan haber al menos 3 ventas anteriores.')
-            return
-          }else{
-            let varPromedioDias1y2 = Math.round((Number(user.sales[s-1].total_units_sales) + Number(user.sales[s].total_units_sales)) / 2)
-            newForecastData = {
-              dia1: Number(user.sales[s].total_units_sales),
-              dia2: Number(user.sales[s-1].total_units_sales),
-              dia3: Number(user.sales[s-2].total_units_sales),
-              promedioDias1y2: varPromedioDias1y2,
-              pronostico4toDia: Math.round(Number(((alpha * Number(user.sales[s-2].total_units_sales)) + (alphaMinusOne * varPromedioDias1y2))))
-            }
-            console.log('637: newForecastData ----->', newForecastData)
-            console.log('637: JSON.stringify(newForecastData) ----->', JSON.stringify(newForecastData))
-          }
+    console.log('625: add_forecast_id_product --->', add_forecast_id_product)
+    user.sales_products.forEach(
+      (saleProduct, sp) => {
+        if (Number(saleProduct.product_id) === Number(add_forecast_id_product)) {
+          totalProductsFind.push(saleProduct)
         }
-
       }
     )
+
+    if (totalProductsFind.length < 3) {
+      Alert.alert('', 'Se necesitan al menos 3 ventas del producto para poder continuar.')
+    }else{
+
+      if (add_forecast_type_forecast == 1) {
+        let sumaPromedioDias = 0
+
+        totalProductsFind.forEach(
+          (productFind, pf) => {
+            if (!(Number(totalProductsFind.length - 1) < Number(Number(pf) + 1))) {
+              sumaPromedioDias = Number(sumaPromedioDias) + Number(productFind.units_sales_product)
+            }
+            newForecastData[`dia${pf+1}`] = Number(productFind.units_sales_product)
+          }
+        )
+
+        newForecastData['promedioDiasTotal'] = Math.round(Number(sumaPromedioDias) / Number(totalProductsFind.length - 1))
+        newForecastData['pronosticoSiguienteDia'] = Math.round(Number((alpha * Number(totalProductsFind[Number(totalProductsFind.length - 1)].units_sales_product))) + Number(alphaMinusOne * Number(newForecastData['promedioDiasTotal'])))
+        console.log('654: newForecastData ----->', newForecastData)
+        console.log('655: JSON.stringify(newForecastData) ----->', JSON.stringify(newForecastData))
+      }
+
+
+    }
     
     await newForecastData
-    this.setState({loading: true})
-
-    let dataUrl = `?user_id=${user.id_user}&sale_id=${add_forecast_id_sale}&type_forecast=1&forecastData=${JSON.stringify(newForecastData)}`
-
+    
+    let dataUrl = `?user_id=${user.id_user}&sale_id=${add_forecast_id_product}&type_forecast=1&forecastData=${JSON.stringify(newForecastData)}`
+    console.log('662: dataUrl ---->', dataUrl)
+    
     fetch(`${rootUrl}/forecast/create/${dataUrl}`)
     .then((res) => { return res.json() })
     .then(
@@ -686,7 +700,7 @@ export default class App extends Component<Props> {
           this.setState({ user })
 
           this.setState({
-            add_forecast_id_sale: 0
+            add_forecast_id_product: 0
           })
           
           Alert.alert('', 'Registro agregado.')
@@ -946,7 +960,11 @@ export default class App extends Component<Props> {
               />
             </View>
             <View style={{margin:7}} />
-            <Button onPress={() => this.setState({modalAddVisible: true, modalAddType: 'forecasts'})} title='Nuevo Pronóstico (Suavización Exponencial)' />
+            <Button onPress={() => this.setState({modalAddVisible: true, modalAddType: 'forecasts', add_forecast_type_forecast: 1, add_forecast_type_forecast_name: '(Suavización Exponencial)'})} title='Nuevo Pronóstico (Suavización Exponencial)' />
+            <View style={{margin:7}} />
+            <Button onPress={() => this.setState({modalAddVisible: true, modalAddType: 'forecasts', add_forecast_type_forecast: 2, add_forecast_type_forecast_name: '(Promedio Móvil)'})} title='Nuevo Pronóstico (Promedio Móvil)' />
+            {/*<View style={{margin:7}} />
+            <Button onPress={() => this.setState({modalAddVisible: true, modalAddType: 'forecasts'})} title='Nuevo Pronóstico (Promedio Móvil)' />*/}
             <View style={{margin:7}} />
             { this.state.user.forecasts && this.state.user.forecasts.length > 0 ?
                 this.state.user.forecasts.map(
@@ -1280,27 +1298,27 @@ export default class App extends Component<Props> {
                 <View style={styles.containerFlex}>
                   <View style={{margin:7}} />
                   <Text style={{fontSize: 27, textAlign: 'center'}}>
-                    Nuevo Pronóstico (Suavización Exponencial)
+                    Nuevo Pronóstico {this.state.add_forecast_type_forecast_name}
                   </Text>
                 </View>
                 <View style={{margin:14}} />
-                { this.state.user.sales && this.state.user.sales.length > 0 ?
+                { this.state.user.products && this.state.user.products.length > 0 ?
                   <Picker
-                    selectedValue={this.state.add_forecast_id_sale}
+                    selectedValue={this.state.add_forecast_id_product}
                     style={styles.input}
                     mode='dropdown'
-                    onValueChange={(itemValue) => this.setState({add_forecast_id_sale: itemValue})}
+                    onValueChange={(itemValue) => this.setState({add_forecast_id_product: itemValue})}
                   >
-                    <Picker.Item label='Seleccione una venta' value={0} />
-                    { this.state.user.sales.map(
-                        (salesUser, su) => {
-                          return(<Picker.Item label={`Venta ID: ${salesUser.id_sale}`} value={salesUser.id_sale} key={su} />)
+                    <Picker.Item label='Seleccione un producto' value={0} />
+                    { this.state.user.products.map(
+                        (product, p) => {
+                          return(<Picker.Item label={product.name} value={product.id_product} key={p} />)
                         }
                       )
                     }
                   </Picker>
                   :
-                  <Text>No hay ventas disponibles. Puede ingresar nuevas en el apartado de ventas.</Text>
+                  <Text>No hay productos disponibles. Puede ingresar nuevas en el apartado de productos.</Text>
                 }
                 <View style={styles.containerFlex}>
                   <Button onPress={() => this.onPressAddButtonForecast()} title='Generar pronóstico' />
