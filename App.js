@@ -152,6 +152,20 @@ export default class App extends Component<Props> {
       loading: false,
       modalAddVisible: false,
       modalAddType: '',
+      modalTitleGraph: '',
+      modalGraphData: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          data: [
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100
+          ]
+        }]
+      },
       user: {},
       login_user: 'jojo@msn.com',
       login_pass: '1234567',
@@ -994,7 +1008,25 @@ export default class App extends Component<Props> {
                           </TouchableOpacity>
                         </View>
                         <View style={styles.containerFlex} >
-                          <TouchableOpacity onPress={() => this.setState({modalAddVisible: true, modalAddType: 'graphs'})}>
+                          <TouchableOpacity onPress={
+                            () => {
+                              let { modalGraphData } = this.state
+                              this.setState({modalAddVisible: true, modalAddType: 'graphs', modalTitleGraph: `Pronóstico: #${forecast.id_forecast}`})
+                              let labelsToSet = []
+                              let dataToSet = []
+                              Object.keys(parseJSONForecastData).forEach(
+                                (dia, d) => {
+                                  if (parseJSONForecastData[`dia${d+1}`] !== undefined) {
+                                    labelsToSet.push(`Dia ${d+1}`)
+                                    dataToSet.push(parseJSONForecastData[`dia${d+1}`])
+                                  }
+                                }
+                              )
+                              modalGraphData.labels = labelsToSet
+                              modalGraphData.datasets[0].data = dataToSet
+                              this.setState({ modalGraphData })
+                            }
+                          }>
                             <Image style={styles.imagesActions} source={GraphsIcon} />
                           </TouchableOpacity>
                         </View>
@@ -1342,22 +1374,10 @@ export default class App extends Component<Props> {
             this.state.modalAddType === 'graphs' ?
               <View style={styles.containerFlex}>
                 <Text>
-                  Bezier Line Chart
+                  {this.state.modalTitleGraph}
                 </Text>
                 <LineChart
-                  data={{
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                      data: [
-                        Math.random() * 100,
-                        Math.random() * 100,
-                        Math.random() * 100,
-                        Math.random() * 100,
-                        Math.random() * 100,
-                        Math.random() * 100
-                      ]
-                    }]
-                  }}
+                  data={this.state.modalGraphData}
                   width={Dimensions.get('window').width} // from react-native
                   height={220}
                   chartConfig={chartConfig}
