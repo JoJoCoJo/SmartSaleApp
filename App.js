@@ -975,10 +975,8 @@ export default class App extends Component<Props> {
             </View>
             <View style={{margin:7}} />
             <Button onPress={() => this.setState({modalAddVisible: true, modalAddType: 'forecasts', add_forecast_type_forecast: 1, add_forecast_type_forecast_name: '(Suavización Exponencial)'})} title='Nuevo Pronóstico (Suavización Exponencial)' />
-            <View style={{margin:7}} />
-            <Button onPress={() => this.setState({modalAddVisible: true, modalAddType: 'forecasts', add_forecast_type_forecast: 2, add_forecast_type_forecast_name: '(Promedio Móvil)'})} title='Nuevo Pronóstico (Promedio Móvil)' />
             {/*<View style={{margin:7}} />
-            <Button onPress={() => this.setState({modalAddVisible: true, modalAddType: 'forecasts'})} title='Nuevo Pronóstico (Promedio Móvil)' />*/}
+            <Button onPress={() => this.setState({modalAddVisible: true, modalAddType: 'forecasts', add_forecast_type_forecast: 2, add_forecast_type_forecast_name: '(Promedio Móvil)'})} title='Nuevo Pronóstico (Promedio Móvil)' />*/}
             <View style={{margin:7}} />
             { this.state.user.forecasts && this.state.user.forecasts.length > 0 ?
                 this.state.user.forecasts.map(
@@ -997,11 +995,11 @@ export default class App extends Component<Props> {
                               Object.keys(parseJSONForecastData).forEach(
                                 (dia, d) => {
                                   if (parseJSONForecastData[`dia${d+1}`] !== undefined) {
-                                    textDays += `Dia ${d+1}: ${parseJSONForecastData[`dia${d+1}`]}\n`
+                                    textDays += `Venta ${d+1}: ${parseJSONForecastData[`dia${d+1}`]}\n`
                                   }
                                 }
                               )
-                              Alert.alert('', `${textDays}Promedio: ${parseJSONForecastData.promedioDiasTotal}\nPronóstico Sig. Día: ${parseJSONForecastData.pronosticoSiguienteDia}`)
+                              Alert.alert('', `${textDays}Promedio: ${parseJSONForecastData.promedioDiasTotal}\nPronóstico Sig. Venta: ${parseJSONForecastData.pronosticoSiguienteDia}`)
                             }
                           }>
                             <Image style={styles.imagesActions} source={DataIcon} />
